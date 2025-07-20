@@ -1,0 +1,1235 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>조이상담코칭센터 | 용인 동백역 심리상담 전문기관</title>
+    <meta name="description" content="심리상담, 아동·부부·개인상담까지! 조이상담코칭센터에서 전문 심리상담과 정서 치유를 경험하세요. 용인 동백역 도보 1분 거리.">
+    <meta name="keywords" content="심리상담, 용인상담센터, 동백역상담, 부부상담, 아동상담, 청소년상담, 개인상담, 심리치료, 놀이치료, 미술치료">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #FDFBF7;
+        }
+
+        .handwriting {
+            font-family: 'Nanum Pen Script', cursive;
+        }
+
+        /* Navigation */
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: #66C6C6;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-text h1 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .logo-text p {
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #6b7280;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #66C6C6;
+        }
+
+        .phone-btn {
+            background: #66C6C6;
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: background 0.3s;
+        }
+
+        .phone-btn:hover {
+            background: #50B0B0;
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            height: 600px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to right, rgba(255, 248, 240, 0.8), rgba(255, 237, 213, 0.5));
+        }
+
+        .hero-content {
+            position: relative;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            z-index: 10;
+        }
+
+        .hero-text {
+            max-width: 600px;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: #1f2937;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: #4b5563;
+            margin-bottom: 2rem;
+        }
+
+        .hero-btn {
+            background: #66C6C6;
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.125rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+
+        .hero-btn:hover {
+            background: #50B0B0;
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+
+        /* Section Styles */
+        .section {
+            padding: 5rem 1rem;
+        }
+
+        .section-white {
+            background: white;
+        }
+
+        .section-light {
+            background: #FDFBF7;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .section-title {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-subtitle {
+            font-size: 1.25rem;
+            color: #6b7280;
+            margin-bottom: 4rem;
+        }
+
+        /* Grid Layouts */
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            border: 1px solid #e5e7eb;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .service-card {
+            background: #F8F8F8;
+            text-align: center;
+            border: none;
+        }
+
+        .service-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            transition: transform 0.3s;
+        }
+
+        .service-card:hover .service-icon {
+            transform: scale(1.1);
+        }
+
+        .service-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 0.75rem;
+        }
+
+        .service-desc {
+            color: #4b5563;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        .service-list {
+            list-style: none;
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+
+        .service-list li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Icon Colors */
+        .icon-teal { background: #E0F2F2; }
+        .icon-purple { background: #F2E0F2; }
+        .icon-green { background: #E0F2E0; }
+        .icon-yellow { background: #F2F2E0; }
+        .icon-red { background: #F2E0E0; }
+
+        /* Trust Section */
+        .trust-card {
+            background: #F8F8F8;
+            border-radius: 1.5rem;
+            padding: 2.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .trust-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .trust-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .trust-list {
+            list-style: none;
+        }
+
+        .trust-list li {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+            color: #4b5563;
+        }
+
+        /* Contact Section */
+        .contact-card {
+            background: white;
+            border-radius: 1.5rem;
+            padding: 3rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .contact-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .contact-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .contact-info {
+            color: #4b5563;
+            line-height: 1.8;
+        }
+
+        .contact-info strong {
+            color: #1f2937;
+        }
+
+        .phone-link {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #66C6C6;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .phone-link:hover {
+            color: #50B0B0;
+        }
+
+        /* Form Styles */
+        .form-section {
+            background: #FDFBF7;
+            padding: 5rem 1rem;
+        }
+
+        .form-card {
+            background: white;
+            border-radius: 1.5rem;
+            padding: 3rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .form-title {
+            font-size: 2rem;
+            color: #1f2937;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+
+        .required {
+            color: #ef4444;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #66C6C6;
+            box-shadow: 0 0 0 3px rgba(102, 198, 198, 0.1);
+        }
+
+        .radio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .radio-option {
+            position: relative;
+        }
+
+        .radio-option input {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .radio-label {
+            display: block;
+            padding: 1rem;
+            border: 2px solid #d1d5db;
+            border-radius: 0.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .radio-option input:checked + .radio-label {
+            border-color: #66C6C6;
+            background: #E0F2F2;
+        }
+
+        .submit-btn {
+            background: #66C6C6;
+            color: white;
+            padding: 1rem 3rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.125rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0 auto;
+        }
+
+        .submit-btn:hover {
+            background: #50B0B0;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: #66C6C6;
+            color: white;
+            padding: 5rem 1rem;
+            text-align: center;
+        }
+
+        .cta-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+        }
+
+        .cta-subtitle {
+            font-size: 1.5rem;
+            opacity: 0.9;
+            margin-bottom: 3rem;
+        }
+
+        .cta-btn {
+            background: white;
+            color: #66C6C6;
+            padding: 1.5rem 3rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.25rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .cta-btn:hover {
+            background: #f9fafb;
+            transform: translateY(-3px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+        }
+
+        /* Footer */
+        .footer {
+            background: #111827;
+            color: white;
+            padding: 3rem 1rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h4 {
+            font-size: 1.125rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .footer-section p,
+        .footer-section li {
+            color: #d1d5db;
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #374151;
+            padding-top: 2rem;
+            text-align: center;
+            color: #9ca3af;
+        }
+
+        /* Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .grid-3,
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .radio-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i data-lucide="heart" style="color: white; width: 24px; height: 24px;"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>조이상담코칭센터</h1>
+                    <p>Joy Counseling & Coaching Center</p>
+                </div>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#about">센터소개</a></li>
+                <li><a href="#services">상담프로그램</a></li>
+                <li><a href="#consultation">상담신청</a></li>
+                <li><a href="#contact">오시는길</a></li>
+            </ul>
+            <button class="phone-btn">
+                <i data-lucide="phone" style="width: 16px; height: 16px;"></i>
+                031-275-3636
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/d_h19Ud018svcrfmhxykezjfk_p435h4.jpg-BEwhVd6sM2VhabRyFHAQSAAL5diPj2.jpeg" alt="변화, 성장 그리고 함께" class="hero-bg">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1 class="hero-title handwriting">
+                    나의 마음을 새롭게,<br>
+                    나의 삶을 새롭게
+                </h1>
+                <p class="hero-subtitle">Renew My Heart, Renew My Life</p>
+                <button class="hero-btn">모두를 위한 심리솔루션</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 결론부터 말할게요 Section -->
+    <section class="section section-light fade-in">
+        <div class="container text-center">
+            <h2 class="section-title">💝 마음 건강의 든든한 파트너</h2>
+            <p class="section-subtitle">마음이 힘들 때, 조이상담코칭센터가 곁에 있습니다</p>
+            
+            <div class="grid-3">
+                <div class="text-center">
+                    <div class="service-icon icon-teal">
+                        <i data-lucide="lightbulb" style="color: #66C6C6; width: 48px; height: 48px;"></i>
+                    </div>
+                    <h3 class="service-title">전문 상담심리사</h3>
+                    <p class="service-desc">박사·교수급 전문가가 1:1 맞춤 상담을 진행합니다.</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="service-icon icon-teal">
+                        <i data-lucide="users" style="color: #66C6C6; width: 48px; height: 48px;"></i>
+                    </div>
+                    <h3 class="service-title">다양한 심리 영역</h3>
+                    <p class="service-desc">아동부터 성인, 기업까지 다양한 심리 영역을 커버합니다.</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="service-icon icon-teal">
+                        <i data-lucide="shield" style="color: #66C6C6; width: 48px; height: 48px;"></i>
+                    </div>
+                    <h3 class="service-title">신뢰받는 기관</h3>
+                    <p class="service-desc">학교, 병원, 공공기관이 함께하는 신뢰받는 심리기관입니다.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 나의 이야기 Section -->
+    <section class="section section-white fade-in">
+        <div class="container">
+            <div class="grid-2" style="align-items: center;">
+                <div>
+                    <img src="/placeholder.svg?height=400&width=400" alt="나의 이야기" style="width: 100%; height: 400px; object-fit: cover; border-radius: 50%; box-shadow: 0 20px 40px rgba(0,0,0,0.15); border: 4px solid white;">
+                </div>
+                <div>
+                    <h2 class="section-title" style="text-align: left; margin-bottom: 1.5rem;">📘 나의 이야기부터 시작할게요</h2>
+                    <p style="font-size: 1.125rem; color: #4b5563; line-height: 1.8; margin-bottom: 1.5rem;">
+                        요즘 따라 이유 없이 무기력하고, 누군가와 솔직히 나눌 공간이 간절했어요.<br>
+                        그러다 알게 된 조이상담코칭센터.<br>
+                        다정한 눈빛과 전문적인 태도가 이곳의 첫인상이었고,
+                    </p>
+                    <p style="font-size: 1.25rem; font-weight: 700; color: #66C6C6; background: #E0F2F2; padding: 1rem; border-radius: 0.75rem; display: inline-block;">
+                        상담을 받으며 알았죠. 내 마음에도 근육이 필요하다는 걸.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 센터 미션 Section -->
+    <section class="section section-light fade-in">
+        <div class="container text-center">
+            <h2 class="section-title">🧭 조이상담코칭센터는 왜 만들어졌을까?</h2>
+            <div class="card" style="max-width: 800px; margin: 0 auto; padding: 3rem; border-radius: 1.5rem;">
+                <h3 style="font-size: 1.5rem; font-weight: 700; color: #66C6C6; margin-bottom: 1.5rem;">"건강한 가정과 사회를 꿈꾸는 기쁨 공동체"</h3>
+                <p style="font-size: 1.125rem; color: #4b5563; line-height: 1.8;">
+                    조이커뮤니티 사회적협동조합이 설립한 이 센터는<br>
+                    마음의 어려움을 혼자 감당하지 않아도 되는 사회를 만들기 위해<br>
+                    공공기관과 협력하며, 모두에게 열려 있는 상담 공간을 제공합니다.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 주요 서비스 Section -->
+    <section id="services" class="section section-white fade-in">
+        <div class="container text-center">
+            <h2 class="section-title">🧠 주요 서비스 소개</h2>
+            <p class="section-subtitle">당신의 마음에 맞는 전문 상담을 찾아보세요</p>
+            
+            <div class="grid-3">
+                <div class="card service-card">
+                    <div class="service-icon icon-teal">
+                        <i data-lucide="lightbulb" style="color: #66C6C6; width: 40px; height: 40px;"></i>
+                    </div>
+                    <h3 class="service-title">개인상담</h3>
+                    <p class="service-desc">자기이해, 삶의 전환점이 필요할 때</p>
+                    <ul class="service-list">
+                        <li>• 성격 이해, 진로 고민</li>
+                        <li>• 감정 조절, 심리검사</li>
+                    </ul>
+                </div>
+
+                <div class="card service-card">
+                    <div class="service-icon icon-purple">
+                        <i data-lucide="message-circle" style="color: #9966CC; width: 40px; height: 40px;"></i>
+                    </div>
+                    <h3 class="service-title">부부·가족상담</h3>
+                    <p class="service-desc">말이 통하지 않을 때, 관계가 지쳐갈 때</p>
+                    <ul class="service-list">
+                        <li>• 소통법 개선, 정서적 거리 회복</li>
+                        <li>• 가족 놀이치료</li>
+                    </ul>
+                </div>
+
+                <div class="card service-card">
+                    <div class="service-icon icon-green">
+                        <i data-lucide="baby" style="color: #66CC66; width: 40px; height: 40px;"></i>
+                    </div>
+                    <h3 class="service-title">아동·청소년 상담</h3>
+                    <p class="service-desc">ADHD, 게임 중독, 학교 적응 문제 등</p>
+                    <ul class="service-list">
+                        <li>• 놀이치료, 모래놀이, 보드게임</li>
+                        <li>• 진로 상담</li>
+                    </ul>
+                </div>
+
+                <div class="card service-card">
+                    <div class="service-icon icon-yellow">
+                        <i data-lucide="camera" style="color: #CCCC66; width: 40px; height: 40px;"></i>
+                    </div>
+                    <h3 class="service-title">사진/미술 치료</h3>
+                    <p class="service-desc">감정을 말로 하기 힘들 때, 표현으로 치유하세요</p>
+                    <ul class="service-list">
+                        <li>• 시각화 기반 감정 표현</li>
+                        <li>• 정서 안정</li>
+                    </ul>
+                </div>
+
+                <div class="card service-card">
+                    <div class="service-icon icon-red">
+                        <i data-lucide="heart" style="color: #CC6666; width: 40px; height: 40px;"></i>
+                    </div>
+                    <h3 class="service-title">외도상담</h3>
+                    <p class="service-desc">무너진 신뢰, 복잡한 감정… 혼자 마주하지 마세요</p>
+                    <ul class="service-list">
+                        <li>• 심리상담 + 법률 연계</li>
+                        <li>• 트라우마 회복</li>
+                    </ul>
+                </div>
+
+                <div class="card service-card">
+                    <div class="service-icon icon-teal">
+                        <i data-lucide="heart" style="color: #66C6C6; width: 40px; height: 40px;"></i>
+                    </div>
+                    <h3 class="service-title">펫로스 상담</h3>
+                    <p class="service-desc">반려동물과 이별한 당신에게</p>
+                    <ul class="service-list">
+                        <li>• 애도 감정 인정과 회복을 위한 전문 상담</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 협력기관 Section -->
+    <section class="section section-light fade-in">
+        <div class="container text-center">
+            <h2 class="section-title">💬 이런 곳에서도 함께하고 있어요</h2>
+            
+            <div class="grid-2">
+                <div class="card">
+                    <h3 style="font-size: 1.25rem; font-weight: 700; color: #1f2937; margin-bottom: 1.5rem;">교육 분야</h3>
+                    <ul style="list-style: none; color: #6b7280;">
+                        <li style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                            <div style="width: 8px; height: 8px; background: #66C6C6; border-radius: 50%;"></div>
+                            <span><strong>용인교육지원청:</strong> 학교폭력 피해자 상담·보호</span>
+                        </li>
+                        <li style="display: flex; align-items: center; gap: 0.75rem;">
+                            <div style="width: 8px; height: 8px; background: #9966CC; border-radius: 50%;"></div>
+                            <span><strong>용인시 Wee센터:</strong> 지역투자 사업 연계</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h3 style="font-size: 1.25rem; font-weight: 700; color: #1f2937; margin-bottom: 1.5rem;">의료·복지 분야</h3>
+                    <ul style="list-style: none; color: #6b7280;">
+                        <li style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                            <div style="width: 8px; height: 8px; background: #66CC66; border-radius: 50%;"></div>
+                            <span><strong>용인세브란스병원:</strong> 아동학대 예방 교육</span>
+                        </li>
+                        <li style="display: flex; align-items: center; gap: 0.75rem;">
+                            <div style="width: 8px; height: 8px; background: #CCCC66; border-radius: 50%;"></div>
+                            <span><strong>아동권리보장원:</strong> 국내 입양가정 심리지원</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 신뢰도 Section -->
+    <section class="section section-white fade-in">
+        <div class="container text-center">
+            <h2 class="section-title">🏥 믿을 수 있는 이유</h2>
+            <p class="section-subtitle">공공기관과 함께하는 검증된 심리상담 전문기관</p>
+            
+            <div class="grid-2">
+                <div class="trust-card">
+                    <div class="trust-header">
+                        <i data-lucide="shield" style="color: #66C6C6; width: 48px; height: 48px;"></i>
+                        <h3 class="trust-title">전문성</h3>
+                    </div>
+                    <ul class="trust-list">
+                        <li>
+                            <i data-lucide="check-circle" style="color: #10b981; width: 20px; height: 20px;"></i>
+                            <span>심리학 박사/상담 교수 직접 상담</span>
+                        </li>
+                        <li>
+                            <i data-lucide="check-circle" style="color: #10b981; width: 20px; height: 20px;"></i>
+                            <span>보건복지부·교육청 등과 협력</span>
+                        </li>
+                        <li>
+                            <i data-lucide="check-circle" style="color: #10b981; width: 20px; height: 20px;"></i>
+                            <span>기획재정부 지정 공익법인</span>
+                        </li>
+                        <li>
+                            <i data-lucide="check-circle" style="color: #10b981; width: 20px; height: 20px;"></i>
+                            <span>민간 자격 발급 가능: 성심리상담사, 가족상담사 등</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="trust-card">
+                    <div class="trust-header">
+                        <i data-lucide="award" style="color: #9966CC; width: 48px; height: 48px;"></i>
+                        <h3 class="trust-title">공신력</h3>
+                    </div>
+                    <ul class="trust-list">
+                        <li>
+                            <i data-lucide="star" style="color: #f59e0b; width: 20px; height: 20px;"></i>
+                            <span>조이커뮤니티 사회적협동조합 운영</span>
+                        </li>
+                        <li>
+                            <i data-lucide="star" style="color: #f59e0b; width: 20px; height: 20px;"></i>
+                            <span>다수 공공기관과 협력 중</span>
+                        </li>
+                        <li>
+                            <i data-lucide="star" style="color: #f59e0b; width: 20px; height: 20px;"></i>
+                            <span>지역사회 밀착형 서비스</span>
+                        </li>
+                        <li>
+                            <i data-lucide="star" style="color: #f59e0b; width: 20px; height: 20px;"></i>
+                            <span>투명한 운영과 관리</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 찾아오시는 길 Section -->
+    <section id="contact" class="section section-light fade-in">
+        <div class="container text-center">
+            <h2 class="section-title">📍 찾아오시는 길</h2>
+            <p class="section-subtitle">동백역에서 도보 1분, 접근성이 뛰어난 위치</p>
+            
+            <div class="contact-card">
+                <div class="grid-2">
+                    <div>
+                        <div class="contact-header">
+                            <i data-lucide="map-pin" style="color: #CC6666; width: 32px; height: 32px;"></i>
+                            <h3 class="contact-title">주소 및 교통</h3>
+                        </div>
+                        <div class="contact-info">
+                            <p><strong>주소:</strong><br>용인시 기흥구 동백3로11번길 3, 동백역타워 601호</p>
+                            <p><strong>지하철:</strong><br>동백역 2번 출구 도보 1분</p>
+                            <p><strong>버스:</strong><br>66-4 / 5003-B / 810 (서해그랑블 하차)</p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="contact-header">
+                            <i data-lucide="phone" style="color: #66CC66; width: 32px; height: 32px;"></i>
+                            <h3 class="contact-title">연락처 정보</h3>
+                        </div>
+                        <div class="contact-info">
+                            <p style="color: #6b7280; margin-bottom: 0.5rem;">상담 예약 및 문의</p>
+                            <a href="tel:031-275-3636" class="phone-link">031-275-3636</a>
+                            <p style="color: #6b7280; margin: 1.5rem 0 0.5rem;">홈페이지</p>
+                            <a href="https://www.joycom.or.kr" target="_blank" style="color: #66C6C6; text-decoration: none; font-size: 1.125rem;">www.joycom.or.kr</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 상담신청 폼 Section -->
+    <section id="consultation" class="form-section fade-in">
+        <div class="container">
+            <div class="text-center" style="margin-bottom: 3rem;">
+                <h2 class="section-title">💝 상담신청하기</h2>
+                <p class="section-subtitle">마음을 나누는 첫걸음, 지금 시작해보세요</p>
+                <p style="color: #66C6C6; font-weight: 500; font-size: 1.125rem;">✨ 신청 후 24시간 내 연락드립니다</p>
+            </div>
+
+            <div class="form-card">
+                <div class="form-header">
+                    <h3 class="form-title">
+                        <i data-lucide="book-open" style="color: #66C6C6; width: 32px; height: 32px;"></i>
+                        상담신청서
+                    </h3>
+                </div>
+
+                <form id="consultationForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">이름 <span class="required">*</span></label>
+                            <input type="text" name="name" class="form-input" placeholder="실명을 입력해주세요" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">연락처 <span class="required">*</span></label>
+                            <input type="tel" name="phone" class="form-input" placeholder="010-1234-5678" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">이메일 <span style="color: #9ca3af;">(선택)</span></label>
+                        <input type="email" name="email" class="form-input" placeholder="example@email.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">상담 유형 <span class="required">*</span></label>
+                        <div class="radio-grid">
+                            <div class="radio-option">
+                                <input type="radio" name="consultationType" value="individual" id="individual" required>
+                                <label for="individual" class="radio-label">
+                                    <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">💡</div>
+                                    <div style="font-weight: 500;">개인상담</div>
+                                </label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="consultationType" value="couple" id="couple">
+                                <label for="couple" class="radio-label">
+                                    <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">💬</div>
+                                    <div style="font-weight: 500;">부부·가족상담</div>
+                                </label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="consultationType" value="child" id="child">
+                                <label for="child" class="radio-label">
+                                    <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">👧</div>
+                                    <div style="font-weight: 500;">아동·청소년 상담</div>
+                                </label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="consultationType" value="art" id="art">
+                                <label for="art" class="radio-label">
+                                    <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🖼️</div>
+                                    <div style="font-weight: 500;">사진/미술 치료</div>
+                                </label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="consultationType" value="affair" id="affair">
+                                <label for="affair" class="radio-label">
+                                    <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">💔</div>
+                                    <div style="font-weight: 500;">외도상담</div>
+                                </label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="consultationType" value="petloss" id="petloss">
+                                <label for="petloss" class="radio-label">
+                                    <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🐾</div>
+                                    <div style="font-weight: 500;">펫로스 상담</div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">상담 방식 <span class="required">*</span></label>
+                        <div class="radio-grid" style="grid-template-columns: repeat(3, 1fr);">
+                            <div class="radio-option">
+                                <input type="radio" name="consultationMethod" value="offline" id="offline" required>
+                                <label for="offline" class="radio-label">
+                                    <div style="font-weight: 500; margin-bottom: 0.25rem;">대면상담</div>
+                                    <div style="font-size: 0.75rem; color: #6b7280;">센터 방문</div>
+                                </label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="consultationMethod" value="phone" id="phone-method">
+                                <label for="phone-method" class="radio-label">
+                                    <div style="font-weight: 500; margin-bottom: 0.25rem;">전화상담</div>
+                                    <div style="font-size: 0.75rem; color: #6b7280;">음성 통화</div>
+                                </label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="consultationMethod" value="online" id="online">
+                                <label for="online" class="radio-label">
+                                    <div style="font-weight: 500; margin-bottom: 0.25rem;">온라인상담</div>
+                                    <div style="font-size: 0.75rem; color: #6b7280;">화상 통화</div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">희망 날짜 <span style="color: #9ca3af;">(선택)</span></label>
+                            <input type="date" name="preferredDate" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">희망 시간 <span style="color: #9ca3af;">(선택)</span></label>
+                            <select name="preferredTime" class="form-input">
+                                <option value="">시간 선택</option>
+                                <option value="morning">오전 (09:00-12:00)</option>
+                                <option value="afternoon">오후 (13:00-17:00)</option>
+                                <option value="evening">저녁 (18:00-21:00)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">상담받고 싶은 내용 <span style="color: #9ca3af;">(선택)</span></label>
+                        <textarea name="message" rows="4" class="form-input" placeholder="어떤 고민이나 어려움이 있으신지 간단히 적어주세요. (선택사항)"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label style="display: flex; align-items: flex-start; gap: 0.75rem; cursor: pointer; background: #f9fafb; padding: 1rem; border-radius: 0.5rem; border: 1px solid #e5e7eb;">
+                            <input type="checkbox" name="privacyConsent" required style="margin-top: 0.25rem;">
+                            <div>
+                                <span style="font-weight: 600; color: #374151;">개인정보 수집 및 이용에 동의합니다 <span class="required">*</span></span>
+                                <p style="color: #6b7280; font-size: 0.875rem; margin-top: 0.25rem;">상담 서비스 제공을 위해 개인정보를 수집하며, 상담 완료 후 안전하게 폐기됩니다.</p>
+                            </div>
+                        </label>
+                    </div>
+
+                    <div style="text-align: center; padding-top: 1rem;">
+                        <button type="submit" class="submit-btn">
+                            <i data-lucide="smile" style="width: 20px; height: 20px;"></i>
+                            상담신청하기
+                        </button>
+                        <p style="color: #6b7280; font-size: 0.875rem; margin-top: 0.75rem;">💌 신청 후 24시간 내에 전화로 연락드립니다</p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section fade-in">
+        <div class="container">
+            <h2 class="cta-title">🤳 상담이 필요하신가요?</h2>
+            <p class="cta-subtitle">망설이지 마세요. 당신의 마음은 소중하니까요.</p>
+            <button class="cta-btn">
+                <i data-lucide="phone" style="width: 24px; height: 24px;"></i>
+                지금 상담 예약하기: 031-275-3636
+            </button>
+            <div style="margin-top: 2rem; font-size: 1.125rem; opacity: 0.8;">
+                🌐 홈페이지: <a href="https://www.joycom.or.kr" style="color: white; text-decoration: underline;">www.joycom.or.kr</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                    <i data-lucide="heart" style="color: #66C6C6; width: 32px; height: 32px;"></i>
+                    <span style="font-size: 1.5rem; font-weight: 700;">조이상담코칭센터</span>
+                </div>
+                <p>건강한 가정과 사회를 꿈꾸는 기쁨 공동체</p>
+            </div>
+
+            <div class="footer-section">
+                <h4>상담 프로그램</h4>
+                <ul>
+                    <li>개인상담 · 부부가족상담</li>
+                    <li>아동청소년상담 · 미술치료</li>
+                    <li>외도상담 · 펫로스상담</li>
+                    <li>기업조직상담</li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h4>연락처</h4>
+                <p>📞 031-275-3636</p>
+                <p>📍 용인시 기흥구 동백3로11번길 3, 동백역타워 601호</p>
+                <p>🌐 www.joycom.or.kr</p>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2024 조이상담코칭센터. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Scroll animation
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Form submission
+        document.getElementById('consultationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData);
+            
+            // Basic validation
+            if (!data.name || !data.phone || !data.consultationType || !data.consultationMethod || !data.privacyConsent) {
+                alert('필수 항목을 모두 입력해주세요.');
+                return;
+            }
+
+            // Phone validation
+            const phoneRegex = /^[0-9-+\s()]+$/;
+            if (!phoneRegex.test(data.phone)) {
+                alert('올바른 전화번호 형식을 입력해주세요.');
+                return;
+            }
+
+            // Email validation (if provided)
+            if (data.email) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(data.email)) {
+                    alert('올바른 이메일 형식을 입력해주세요.');
+                    return;
+                }
+            }
+
+            // Simulate form submission
+            const submitBtn = this.querySelector('.submit-btn');
+            const originalText = submitBtn.innerHTML;
+            
+            submitBtn.innerHTML = '<div style="width: 20px; height: 20px; border: 2px solid #fff; border-top: 2px solid transparent; border-radius: 50%; animation: spin 1s linear infinite; margin-right: 0.5rem;"></div>신청 중...';
+            submitBtn.disabled = true;
+
+            setTimeout(() => {
+                alert(`${data.name}님의 상담신청이 접수되었습니다. 빠른 시일 내에 연락드리겠습니다.`);
+                this.reset();
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }, 2000);
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add spin animation for loading
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
