@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>조이상담코칭센터 - 관리자</title>
+    
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js';
+        import { getFirestore, collection, query, orderBy, getDocs, doc, updateDoc } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js';
+
+        // Firebase 설정
+        const firebaseConfig = {
+            apiKey: "AIzaSyDldYr1xOyH_H44UR7tXS_hUomXbbkGVEg",
+            authDomain: "joy-counseling-center.firebaseapp.com",
+            projectId: "joy-counseling-center",
+            storageBucket: "joy-counseling-center.firebasestorage.app",
+            messagingSenderId: "976976902307",
+            appId: "1:976976902307:web:93114b8dd4c7691daa6716",
+            measurementId: "G-GR2197VTJ4"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        
+        // 전역으로 사용할 수 있도록 window 객체에 저장
+        window.db = db;
+        window.collection = collection;
+        window.query = query;
+        window.orderBy = orderBy;
+        window.getDocs = getDocs;
+        window.doc = doc;
+        window.updateDoc = updateDoc;
+    </script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            color: #66C6C6;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #66C6C6;
+        }
+
+        .stat-label {
+            color: #666;
+            margin-top: 0.5rem;
+        }
+
+        .consultations-section {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: 1.5rem;
+            background: #66C6C6;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-header h2 {
+            font-size: 1.5rem;
+        }
+
+        .refresh-btn {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .refresh-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .status.pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status.contacted {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status.scheduled {
+            background: #cce5ff;
+            color: #004085;
+        }
+
+        .status.completed {
+            background: #e2e3e5;
+            color: #383d41;
+        }
+
+        .consultation-type {
+            padding: 0.25rem 0.5rem;
+            border-radius: 5px;
+            font-size: 0.875rem;
+            background: #e7f3ff;
+            color: #0066cc;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+
+        .action-btn {
+            padding: 0.25rem 0.5rem;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            margin-right: 0.25rem;
+        }
+
+        .contact-btn {
+            background: #28a745;
+            color: white;
+        }
+
+        .schedule-btn {
+            background: #007bff;
+            color: white;
+        }
+
+        .complete-btn {
+            background: #6c757d;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏥 조이상담코칭센터 관리자</h1>
+            <p>상담신청서 관리 시스템</p>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="totalCount">-</div>
+                <div class="stat-label">전체 신청</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="pendingCount">-</div>
+                <div class="stat-label">대기 중</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="contactedCount">-</div>
+                <div class="stat-label">연락 완료</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="scheduledCount">-</div>
+                <div class="stat-label">상담 예약</div>
+            </div>
+        </div>
+
+        <div class="consultations-section">
+            <div class="section-header">
+                <h2>📋 상담신청서 목록</h2>
+                <button class="refresh-btn" onclick="loadConsultations()">새로고침</button>
+            </div>
+            
+            <div class="table-container">
+                <div id="loading" class="loading">
+                    데이터를 불러오는 중...
+                </div>
+                
+                <table id="consultationsTable" style="display: none;">
+                    <thead>
+                        <tr>
+                            <th>신청일시</th>
+                            <th>이름</th>
+                            <th>연락처</th>
+                            <th>상담유형</th>
+                            <th>상담방식</th>
+                            <th>희망일시</th>
+                            <th>상태</th>
+                            <th>관리</th>
+                        </tr>
+                    </thead>
+                    <tbody id="consultationsBody">
+                    </tbody>
+                </table>
+
+                <div id="noData" class="no-data" style="display: none;">
+                    등록된 상담신청서가 없습니다.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 상담신청서 목록 로드
+        async function loadConsultations() {
+            try {
+                document.getElementById('loading').style.display = 'block';
+                document.getElementById('consultationsTable').style.display = 'none';
+                document.getElementById('noData').style.display = 'none';
+
+                console.log('데이터 로딩 시작...');
+
+                const q = window.query(
+                    window.collection(window.db, 'consultations'),
+                    window.orderBy('createdAt', 'desc')
+                );
+                
+                const querySnapshot = await window.getDocs(q);
+                const consultations = [];
+                
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    console.log('문서 데이터:', data); // 디버깅용
+                    consultations.push({
+                        id: doc.id,
+                        ...data
+                    });
+                });
+
+                console.log('로드된 상담신청서 수:', consultations.length);
+
+                displayConsultations(consultations);
+                updateStats(consultations);
+
+            } catch (error) {
+                console.error('데이터 로드 중 오류:', error);
+                console.error('에러 세부사항:', error.message);
+                document.getElementById('loading').innerHTML = `데이터 로드 중 오류가 발생했습니다.<br>에러: ${error.message}<br><button onclick="loadConsultations()" style="margin-top: 10px; padding: 5px 10px;">다시 시도</button>`;
+            }
+        }
+
+        // 상담신청서 목록 표시
+        function displayConsultations(consultations) {
+            const tbody = document.getElementById('consultationsBody');
+            
+            if (consultations.length === 0) {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('noData').style.display = 'block';
+                return;
+            }
+
+            tbody.innerHTML = '';
+
+            consultations.forEach(consultation => {
+                const row = document.createElement('tr');
+                
+                // 날짜 포맷팅 - 다양한 형식 지원
+                let createdAt = '-';
+                if (consultation.createdAt) {
+                    try {
+                        if (consultation.createdAt.seconds) {
+                            // Firestore Timestamp 객체인 경우
+                            createdAt = new Date(consultation.createdAt.seconds * 1000).toLocaleString('ko-KR');
+                        } else if (consultation.createdAt.toDate) {
+                            // Firestore Timestamp 메서드가 있는 경우
+                            createdAt = consultation.createdAt.toDate().toLocaleString('ko-KR');
+                        } else {
+                            // 일반 Date 객체인 경우
+                            createdAt = new Date(consultation.createdAt).toLocaleString('ko-KR');
+                        }
+                    } catch (e) {
+                        console.error('날짜 변환 오류:', e);
+                        createdAt = '날짜 오류';
+                    }
+                }
+                
+                const preferredDateTime = consultation.preferredDate ? 
+                    `${consultation.preferredDate} ${getTimeLabel(consultation.preferredTime)}` : '-';
+
+                row.innerHTML = `
+                    <td>${createdAt}</td>
+                    <td><strong>${consultation.name}</strong></td>
+                    <td>${consultation.phone}</td>
+                    <td><span class="consultation-type">${getConsultationTypeLabel(consultation.consultationType)}</span></td>
+                    <td>${getConsultationMethodLabel(consultation.consultationMethod)}</td>
+                    <td>${preferredDateTime}</td>
+                    <td><span class="status ${consultation.status}">${getStatusLabel(consultation.status)}</span></td>
+                    <td>
+                        ${consultation.status === 'pending' ? `<button class="action-btn contact-btn" onclick="updateStatus('${consultation.id}', 'contacted')">연락완료</button>` : ''}
+                        ${consultation.status === 'contacted' ? `<button class="action-btn schedule-btn" onclick="updateStatus('${consultation.id}', 'scheduled')">예약완료</button>` : ''}
+                        ${consultation.status === 'scheduled' ? `<button class="action-btn complete-btn" onclick="updateStatus('${consultation.id}', 'completed')">상담완료</button>` : ''}
+                    </td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('consultationsTable').style.display = 'table';
+        }
+
+        // 통계 업데이트
+        function updateStats(consultations) {
+            const stats = {
+                total: consultations.length,
+                pending: consultations.filter(c => c.status === 'pending').length,
+                contacted: consultations.filter(c => c.status === 'contacted').length,
+                scheduled: consultations.filter(c => c.status === 'scheduled').length
+            };
+
+            document.getElementById('totalCount').textContent = stats.total;
+            document.getElementById('pendingCount').textContent = stats.pending;
+            document.getElementById('contactedCount').textContent = stats.contacted;
+            document.getElementById('scheduledCount').textContent = stats.scheduled;
+        }
+
+        // 상태 업데이트
+        async function updateStatus(id, newStatus) {
+            try {
+                await window.updateDoc(window.doc(window.db, 'consultations', id), {
+                    status: newStatus,
+                    updatedAt: new Date()
+                });
+                
+                // 목록 새로고침
+                loadConsultations();
+                alert('상태가 업데이트되었습니다.');
+                
+            } catch (error) {
+                console.error('상태 업데이트 중 오류:', error);
+                alert('상태 업데이트 중 오류가 발생했습니다.');
+            }
+        }
+
+        // 라벨 변환 함수들
+        function getConsultationTypeLabel(type) {
+            const labels = {
+                'individual': '개인상담',
+                'couple': '부부·가족상담',
+                'child': '아동·청소년 상담',
+                'art': '사진/미술 치료',
+                'affair': '외도상담',
+                'petloss': '펫로스 상담'
+            };
+            return labels[type] || type;
+        }
+
+        function getConsultationMethodLabel(method) {
+            const labels = {
+                'offline': '대면상담',
+                'phone': '전화상담',
+                'online': '온라인상담'
+            };
+            return labels[method] || method;
+        }
+
+        function getStatusLabel(status) {
+            const labels = {
+                'pending': '대기 중',
+                'contacted': '연락 완료',
+                'scheduled': '예약 완료',
+                'completed': '상담 완료'
+            };
+            return labels[status] || status;
+        }
+
+        function getTimeLabel(time) {
+            const labels = {
+                'morning': '오전',
+                'afternoon': '오후',
+                'evening': '저녁'
+            };
+            return labels[time] || '';
+        }
+
+        // Firebase 초기화 상태 확인 후 데이터 로드
+        function waitForFirebaseAndLoadData() {
+            if (window.db && window.collection && window.query) {
+                console.log('Firebase 초기화 완료, 데이터 로딩 시작');
+                loadConsultations();
+            } else {
+                console.log('Firebase 초기화 대기 중...');
+                setTimeout(waitForFirebaseAndLoadData, 500);
+            }
+        }
+
+        // 페이지 로드 시 데이터 로드
+        window.addEventListener('load', () => {
+            // Firebase 초기화 대기 후 데이터 로드
+            waitForFirebaseAndLoadData();
+        });
+    </script>
+</body>
+</html> 

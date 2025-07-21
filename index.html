@@ -13,6 +13,35 @@
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     
+    <!-- Firebase SDK -->
+    <script type="module">
+        // Firebase 설정
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js';
+        import { getFirestore, collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js';
+        import { getAnalytics } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics.js';
+
+        // Firebase 설정
+        const firebaseConfig = {
+            apiKey: "AIzaSyDldYr1xOyH_H44UR7tXS_hUomXbbkGVEg",
+            authDomain: "joy-counseling-center.firebaseapp.com",
+            projectId: "joy-counseling-center",
+            storageBucket: "joy-counseling-center.firebasestorage.app",
+            messagingSenderId: "976976902307",
+            appId: "1:976976902307:web:93114b8dd4c7691daa6716",
+            measurementId: "G-GR2197VTJ4"
+        };
+
+        // Firebase 초기화
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        
+        // 전역으로 사용할 수 있도록 window 객체에 저장
+        window.db = db;
+        window.addDoc = addDoc;
+        window.collection = collection;
+        window.serverTimestamp = serverTimestamp;
+    </script>
+    
     <style>
         * {
             margin: 0;
@@ -151,7 +180,8 @@
         .hero-title {
             font-size: 3.5rem;
             font-weight: 700;
-            color: #1f2937;
+            color: #111827;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
             line-height: 1.2;
             margin-bottom: 1rem;
         }
@@ -645,8 +675,8 @@
         <div class="hero-content">
             <div class="hero-text">
                 <h1 class="hero-title handwriting">
-                    나의 마음을 새롭게,<br>
-                    나의 삶을 새롭게
+                    나의 <span style="color: white;">마음을</span> 새롭게,<br>
+                    나의 <span style="color: white;">삶을</span> 새롭게
                 </h1>
                 <p class="hero-subtitle">Renew My Heart, Renew My Life</p>
                 <button class="hero-btn">모두를 위한 심리솔루션</button>
@@ -693,10 +723,10 @@
         <div class="container">
             <div class="grid-2" style="align-items: center;">
                 <div>
-                    <img src="/placeholder.svg?height=400&width=400" alt="나의 이야기" style="width: 100%; height: 400px; object-fit: cover; border-radius: 50%; box-shadow: 0 20px 40px rgba(0,0,0,0.15); border: 4px solid white;">
+                    <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="상담을 통한 마음의 치유" style="width: 100%; height: 400px; object-fit: cover; border-radius: 50%; box-shadow: 0 20px 40px rgba(0,0,0,0.15); border: 4px solid white;">
                 </div>
                 <div>
-                    <h2 class="section-title" style="text-align: left; margin-bottom: 1.5rem;">📘 나의 이야기부터 시작할게요</h2>
+                    <h2 class="section-title" style="text-align: left; margin-bottom: 1.5rem;">💝 상담을 통해 발견한 마음의 힘</h2>
                     <p style="font-size: 1.125rem; color: #4b5563; line-height: 1.8; margin-bottom: 1.5rem;">
                         요즘 따라 이유 없이 무기력하고, 누군가와 솔직히 나눌 공간이 간절했어요.<br>
                         그러다 알게 된 조이상담코칭센터.<br>
@@ -1163,48 +1193,112 @@
             observer.observe(el);
         });
 
-        // Form submission
-        document.getElementById('consultationForm').addEventListener('submit', function(e) {
+        // Firebase에 상담신청서 저장하는 함수
+        async function saveConsultationToFirebase(consultationData) {
+            try {
+                // Firestore에 데이터 저장
+                const docRef = await window.addDoc(window.collection(window.db, 'consultations'), {
+                    ...consultationData,
+                    status: 'pending',
+                    createdAt: window.serverTimestamp(),
+                    updatedAt: window.serverTimestamp()
+                });
+
+                console.log('상담신청서가 성공적으로 저장되었습니다. ID:', docRef.id);
+                return {
+                    success: true,
+                    id: docRef.id,
+                    message: '상담신청이 접수되었습니다.'
+                };
+
+            } catch (error) {
+                console.error('상담신청서 저장 중 오류 발생:', error);
+                return {
+                    success: false,
+                    error: error.message,
+                    message: '신청 접수 중 오류가 발생했습니다. 다시 시도해주세요.'
+                };
+            }
+        }
+
+        // 데이터 유효성 검증 함수
+        function validateConsultationData(data) {
+            const errors = [];
+
+            // 필수 필드 검증
+            if (!data.name?.trim()) {
+                errors.push('이름을 입력해주세요.');
+            }
+
+            if (!data.phone?.trim()) {
+                errors.push('연락처를 입력해주세요.');
+            } else if (!/^[0-9-+\s()]+$/.test(data.phone)) {
+                errors.push('올바른 전화번호 형식을 입력해주세요.');
+            }
+
+            if (!data.consultationType) {
+                errors.push('상담 유형을 선택해주세요.');
+            }
+
+            if (!data.consultationMethod) {
+                errors.push('상담 방식을 선택해주세요.');
+            }
+
+            // 이메일 유효성 검증 (선택사항)
+            if (data.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
+                errors.push('올바른 이메일 형식을 입력해주세요.');
+            }
+
+            if (!data.privacyConsent) {
+                errors.push('개인정보 수집 및 이용에 동의해주세요.');
+            }
+
+            return {
+                isValid: errors.length === 0,
+                errors: errors
+            };
+        }
+
+        // Form submission with Firebase integration
+        document.getElementById('consultationForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const formData = new FormData(this);
             const data = Object.fromEntries(formData);
             
-            // Basic validation
-            if (!data.name || !data.phone || !data.consultationType || !data.consultationMethod || !data.privacyConsent) {
-                alert('필수 항목을 모두 입력해주세요.');
+            // 데이터 유효성 검증
+            const validation = validateConsultationData(data);
+            if (!validation.isValid) {
+                alert(validation.errors.join('\n'));
                 return;
             }
 
-            // Phone validation
-            const phoneRegex = /^[0-9-+\s()]+$/;
-            if (!phoneRegex.test(data.phone)) {
-                alert('올바른 전화번호 형식을 입력해주세요.');
-                return;
-            }
-
-            // Email validation (if provided)
-            if (data.email) {
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if (!emailRegex.test(data.email)) {
-                    alert('올바른 이메일 형식을 입력해주세요.');
-                    return;
-                }
-            }
-
-            // Simulate form submission
+            // 제출 버튼 상태 변경
             const submitBtn = this.querySelector('.submit-btn');
             const originalText = submitBtn.innerHTML;
             
             submitBtn.innerHTML = '<div style="width: 20px; height: 20px; border: 2px solid #fff; border-top: 2px solid transparent; border-radius: 50%; animation: spin 1s linear infinite; margin-right: 0.5rem;"></div>신청 중...';
             submitBtn.disabled = true;
 
-            setTimeout(() => {
-                alert(`${data.name}님의 상담신청이 접수되었습니다. 빠른 시일 내에 연락드리겠습니다.`);
-                this.reset();
+            try {
+                // Firebase에 데이터 저장
+                const result = await saveConsultationToFirebase(data);
+
+                if (result.success) {
+                    alert(`${data.name}님의 상담신청이 성공적으로 접수되었습니다.\n\n신청 ID: ${result.id}\n\n24시간 내에 담당자가 연락드리겠습니다.`);
+                    this.reset(); // 폼 초기화
+                } else {
+                    alert(result.message || '신청 접수 중 오류가 발생했습니다.');
+                }
+
+            } catch (error) {
+                console.error('폼 제출 중 오류:', error);
+                alert('네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+            } finally {
+                // 버튼 상태 복원
                 submitBtn.innerHTML = originalText;
                 submitBtn.disabled = false;
-            }, 2000);
+            }
         });
 
         // Smooth scrolling for navigation links
