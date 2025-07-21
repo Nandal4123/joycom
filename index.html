@@ -13,6 +13,12 @@
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     
+    <!-- EmailJS -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    
+    <!-- 알림 서비스 -->
+    <script src="notification-service.js"></script>
+    
     <!-- Firebase SDK -->
     <script type="module">
         // Firebase 설정
@@ -1205,6 +1211,15 @@
                 });
 
                 console.log('상담신청서가 성공적으로 저장되었습니다. ID:', docRef.id);
+
+                // 알림 발송
+                const applicationData = {
+                    ...consultationData,
+                    id: docRef.id
+                };
+                
+                await sendNotifications(applicationData);
+
                 return {
                     success: true,
                     id: docRef.id,
@@ -1219,6 +1234,47 @@
                     message: '신청 접수 중 오류가 발생했습니다. 다시 시도해주세요.'
                 };
             }
+        }
+
+        // 실제 알림 발송 함수
+        async function sendNotifications(applicationData) {
+            try {
+                console.log('🔔 알림 발송 시작:', applicationData.name);
+
+                // 신청자에게 확인 알림 발송
+                const confirmResult = await window.notificationService.sendConfirmationToApplicant(applicationData);
+                console.log('신청자 알림 결과:', confirmResult);
+
+                // 관리자에게 신청 알림 발송
+                const adminResult = await window.notificationService.sendNotificationToAdmin(applicationData);
+                console.log('관리자 알림 결과:', adminResult);
+
+                console.log('✅ 모든 알림 발송 완료');
+
+            } catch (error) {
+                console.error('❌ 알림 발송 중 오류:', error);
+                // 알림 실패해도 신청은 성공으로 처리
+                
+                // 폴백: 기본 시뮬레이션 알림
+                console.log('📱 SMS 폴백 시뮬레이션:', {
+                    신청자: applicationData.phone,
+                    관리자: '031-275-3636',
+                    내용: `새 상담신청: ${applicationData.name}`
+                });
+            }
+        }
+
+        // 상담 유형 라벨 변환
+        function getConsultationTypeLabel(type) {
+            const labels = {
+                'individual': '개인상담',
+                'couple': '부부·가족상담',
+                'child': '아동·청소년 상담',
+                'art': '사진/미술 치료',
+                'affair': '외도상담',
+                'petloss': '펫로스 상담'
+            };
+            return labels[type] || type;
         }
 
         // 데이터 유효성 검증 함수

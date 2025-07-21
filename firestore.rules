@@ -1,0 +1,80 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 상담신청서 컬렉션 보안 규칙
+    match /consultations/{document} {
+      // 생성: 모든 사용자 허용 (상담신청서 제출)
+      allow create: if validateConsultationData(request.resource.data);
+      
+      // 읽기: 개발/테스트용으로 일시적 허용 (추후 관리자 인증으로 변경)
+      allow read: if true;
+      
+      // 수정: 상태 업데이트만 허용
+      allow update: if validateStatusUpdate(request.resource.data, resource.data);
+      
+      // 삭제: 제한 (관리자만 가능하도록 추후 변경)
+      allow delete: if false;
+    }
+    
+    // 관리자 계정 컬렉션 (추후 추가용)
+    match /admins/{adminId} {
+      allow read, write: if request.auth != null && request.auth.uid == adminId;
+    }
+    
+    // 상담 통계 컬렉션 (읽기 전용)
+    match /statistics/{document} {
+      allow read: if true;
+      allow write: if false; // Cloud Functions에서만 업데이트
+    }
+  }
+}
+
+// 상담신청서 데이터 유효성 검증
+function validateConsultationData(data) {
+  return data.keys().hasAll(['name', 'phone', 'consultationType', 'consultationMethod', 'privacyConsent']) &&
+         
+         // 필수 필드 검증
+         data.name is string && data.name.size() > 0 && data.name.size() <= 50 &&
+         data.phone is string && data.phone.size() > 0 && data.phone.size() <= 20 &&
+         
+         // 상담 유형 검증
+         data.consultationType in ['individual', 'couple', 'child', 'art', 'affair', 'petloss'] &&
+         
+         // 상담 방식 검증
+         data.consultationMethod in ['offline', 'phone', 'online'] &&
+         
+         // 개인정보 동의 검증
+         data.privacyConsent == true &&
+         
+         // 선택 필드 검증
+         (!('email' in data) || (data.email is string && data.email.size() <= 100)) &&
+         (!('message' in data) || (data.message is string && data.message.size() <= 1000)) &&
+         (!('preferredDate' in data) || data.preferredDate is string) &&
+         (!('preferredTime' in data) || data.preferredTime in ['morning', 'afternoon', 'evening']) &&
+         
+         // 상태 필드 검증
+         data.status == 'pending' &&
+         
+         // 타임스탬프 검증
+         data.createdAt == request.time &&
+         data.updatedAt == request.time;
+}
+
+// 상태 업데이트 검증
+function validateStatusUpdate(newData, oldData) {
+  return 
+    // 기본 정보는 변경 불가
+    newData.name == oldData.name &&
+    newData.phone == oldData.phone &&
+    newData.consultationType == oldData.consultationType &&
+    newData.consultationMethod == oldData.consultationMethod &&
+    
+    // 상태 변경만 허용
+    newData.status in ['pending', 'contacted', 'scheduled', 'completed', 'cancelled'] &&
+    
+    // 업데이트 시간 갱신
+    newData.updatedAt == request.time &&
+    
+    // 생성 시간은 변경 불가
+    newData.createdAt == oldData.createdAt;
+} 
