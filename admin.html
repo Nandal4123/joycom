@@ -5,10 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>조이상담코칭센터 - 관리자</title>
     
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    
     <!-- Firebase SDK -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js';
-        import { getFirestore, collection, query, orderBy, getDocs, doc, updateDoc } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js';
+        import { getFirestore, collection, query, orderBy, getDocs, doc, updateDoc, getDoc } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js';
+        import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js';
 
         // Firebase 설정
         const firebaseConfig = {
@@ -23,15 +27,21 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        const auth = getAuth(app);
         
         // 전역으로 사용할 수 있도록 window 객체에 저장
         window.db = db;
+        window.auth = auth;
         window.collection = collection;
         window.query = query;
         window.orderBy = orderBy;
         window.getDocs = getDocs;
+        window.getDoc = getDoc;
         window.doc = doc;
         window.updateDoc = updateDoc;
+        window.onAuthStateChanged = onAuthStateChanged;
+        window.signInWithEmailAndPassword = signInWithEmailAndPassword;
+        window.signOut = signOut;
     </script>
 
     <style>
@@ -62,10 +72,59 @@
             margin-bottom: 2rem;
         }
 
-        .header h1 {
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .header-title h1 {
             color: #66C6C6;
             font-size: 2rem;
             margin-bottom: 0.5rem;
+        }
+
+        /* 눈에 띄는 메인 페이지 버튼 */
+        .home-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, #66C6C6, #4ADED4);
+            color: white;
+            border: none;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 198, 198, 0.3);
+            text-decoration: none;
+        }
+
+        .home-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 198, 198, 0.4);
+            background: linear-gradient(135deg, #4ADED4, #66C6C6);
+        }
+
+        .home-btn:active {
+            transform: translateY(0);
+        }
+
+        /* 반응형 디자인 */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .home-btn {
+                padding: 0.875rem 1.25rem;
+                font-size: 0.9rem;
+            }
         }
 
         .stats {
@@ -219,70 +278,418 @@
             background: #6c757d;
             color: white;
         }
+
+        /* 관리자 로그인 화면 스타일 */
+        .login-screen {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .login-container {
+            background: white;
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .login-title {
+            color: #333;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .login-subtitle {
+            color: #666;
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .login-input {
+            padding: 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .login-input:focus {
+            outline: none;
+            border-color: #66C6C6;
+        }
+
+        .login-btn {
+            background: linear-gradient(135deg, #66C6C6, #4ADED4);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 198, 198, 0.3);
+        }
+
+        .login-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .error-message {
+            background: #fee;
+            color: #c33;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border: 1px solid #fcc;
+        }
+
+        .admin-screen {
+            display: none;
+        }
+
+        .admin-header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .logout-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #c82333;
+        }
+
+        .admin-info {
+            font-size: 0.9rem;
+            color: #666;
+        }
     </style>
 </head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>🏥 조이상담코칭센터 관리자</h1>
-            <p>상담신청서 관리 시스템</p>
-        </div>
-
-        <div class="stats">
-            <div class="stat-card">
-                <div class="stat-number" id="totalCount">-</div>
-                <div class="stat-label">전체 신청</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" id="pendingCount">-</div>
-                <div class="stat-label">대기 중</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" id="contactedCount">-</div>
-                <div class="stat-label">연락 완료</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" id="scheduledCount">-</div>
-                <div class="stat-label">상담 예약</div>
-            </div>
-        </div>
-
-        <div class="consultations-section">
-            <div class="section-header">
-                <h2>📋 상담신청서 목록</h2>
-                <button class="refresh-btn" onclick="loadConsultations()">새로고침</button>
-            </div>
+  <body>
+    <!-- 로그인 화면 -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-container">
+            <h1 class="login-title">🔐 관리자 로그인</h1>
+            <p class="login-subtitle">조이상담코칭센터 관리자 전용</p>
             
-            <div class="table-container">
-                <div id="loading" class="loading">
-                    데이터를 불러오는 중...
+            <form id="loginForm" class="login-form">
+                <input 
+                    type="email" 
+                    id="adminEmail" 
+                    class="login-input" 
+                    placeholder="관리자 이메일"
+                    required
+                >
+                <input 
+                    type="password" 
+                    id="adminPassword" 
+                    class="login-input" 
+                    placeholder="비밀번호"
+                    required
+                >
+                <button type="submit" id="loginBtn" class="login-btn">
+                    로그인
+                </button>
+            </form>
+            
+            <div id="loginError" class="error-message" style="display: none;"></div>
+            
+            <button class="home-btn" onclick="window.open('index.html', '_self')" title="메인 페이지로 돌아가기" style="margin-top: 2rem;">
+                <i data-lucide="home" style="width: 16px; height: 16px;"></i>
+                <span>메인으로</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- 관리자 화면 -->
+    <div id="adminScreen" class="admin-screen">
+        <div class="container">
+            <div class="header">
+                <div class="header-content">
+                    <div class="header-title">
+                        <h1>🏥 조이상담코칭센터 관리자</h1>
+                        <p>상담신청서 관리 시스템</p>
+                    </div>
+                    <div class="admin-header-actions">
+                        <div class="admin-info">
+                            <span id="adminUserInfo"></span>
+                        </div>
+                        <button class="logout-btn" onclick="adminLogout()">
+                            로그아웃
+                        </button>
+                        <button class="home-btn" onclick="window.open('index.html', '_self')" title="메인 페이지로 돌아가기">
+                            <i data-lucide="home" style="width: 20px; height: 20px;"></i>
+                            <span>메인으로</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalCount">-</div>
+                    <div class="stat-label">전체 신청</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="pendingCount">-</div>
+                    <div class="stat-label">대기 중</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="contactedCount">-</div>
+                    <div class="stat-label">연락 완료</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="scheduledCount">-</div>
+                    <div class="stat-label">상담 예약</div>
+                </div>
+            </div>
+
+            <div class="consultations-section">
+                <div class="section-header">
+                    <h2>📋 상담신청서 목록</h2>
+                    <button class="refresh-btn" onclick="loadConsultations()">새로고침</button>
                 </div>
                 
-                <table id="consultationsTable" style="display: none;">
-                    <thead>
-                        <tr>
-                            <th>신청일시</th>
-                            <th>이름</th>
-                            <th>연락처</th>
-                            <th>상담유형</th>
-                            <th>상담방식</th>
-                            <th>희망일시</th>
-                            <th>상태</th>
-                            <th>관리</th>
-                        </tr>
-                    </thead>
-                    <tbody id="consultationsBody">
-                    </tbody>
-                </table>
+                <div class="table-container">
+                    <div id="loading" class="loading">
+                        데이터를 불러오는 중...
+                    </div>
+                    
+                    <table id="consultationsTable" style="display: none;">
+                        <thead>
+                            <tr>
+                                <th>신청일시</th>
+                                <th>이름</th>
+                                <th>연락처</th>
+                                <th>상담유형</th>
+                                <th>상담방식</th>
+                                <th>희망일시</th>
+                                <th>상태</th>
+                                <th>관리</th>
+                            </tr>
+                        </thead>
+                        <tbody id="consultationsBody">
+                        </tbody>
+                    </table>
 
-                <div id="noData" class="no-data" style="display: none;">
-                    등록된 상담신청서가 없습니다.
+                    <div id="noData" class="no-data" style="display: none;">
+                        등록된 상담신청서가 없습니다.
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
+        // 관리자 이메일 목록 (실제로는 Firestore에 저장해야 함)
+        const ADMIN_EMAILS = [
+            'admin@joycom.or.kr',
+            'manager@joycom.or.kr',
+            'counselor@joycom.or.kr'
+        ];
+
+        // 현재 관리자 사용자
+        let currentAdminUser = null;
+
+        // ========================================
+        // 🔐 관리자 인증 시스템
+        // ========================================
+
+        // 관리자 이메일 확인
+        async function checkAdminPermission(email) {
+            try {
+                // 방법 1: 하드코딩된 관리자 이메일 목록 확인
+                if (ADMIN_EMAILS.includes(email)) {
+                    return true;
+                }
+
+                // 방법 2: Firestore의 admins 컬렉션에서 확인 (추후 구현)
+                /*
+                const adminDoc = await window.getDoc(window.doc(window.db, 'admins', email));
+                return adminDoc.exists();
+                */
+
+                return false;
+            } catch (error) {
+                console.error('관리자 권한 확인 오류:', error);
+                return false;
+            }
+        }
+
+        // 관리자 로그인
+        async function adminLogin(email, password) {
+            try {
+                console.log('🔐 관리자 로그인 시도:', email);
+
+                // Firebase Auth 로그인
+                const userCredential = await window.signInWithEmailAndPassword(window.auth, email, password);
+                const user = userCredential.user;
+
+                console.log('✅ Firebase 인증 성공:', user.email);
+
+                // 관리자 권한 확인
+                const isAdmin = await checkAdminPermission(user.email);
+                
+                if (!isAdmin) {
+                    // 관리자가 아닌 경우 로그아웃 후 오류 표시
+                    await window.signOut(window.auth);
+                    throw new Error('관리자 권한이 없습니다.');
+                }
+
+                console.log('✅ 관리자 권한 확인 완료');
+                currentAdminUser = user;
+                showAdminScreen();
+                
+                return true;
+
+            } catch (error) {
+                console.error('❌ 관리자 로그인 오류:', error);
+                
+                let errorMessage = '로그인에 실패했습니다.';
+                
+                if (error.code === 'auth/user-not-found') {
+                    errorMessage = '등록되지 않은 이메일입니다.';
+                } else if (error.code === 'auth/wrong-password') {
+                    errorMessage = '비밀번호가 올바르지 않습니다.';
+                } else if (error.code === 'auth/invalid-email') {
+                    errorMessage = '이메일 형식이 올바르지 않습니다.';
+                } else if (error.message === '관리자 권한이 없습니다.') {
+                    errorMessage = '관리자 권한이 없습니다. 일반 사용자는 접근할 수 없습니다.';
+                }
+                
+                showLoginError(errorMessage);
+                return false;
+            }
+        }
+
+        // 관리자 로그아웃
+        async function adminLogout() {
+            try {
+                await window.signOut(window.auth);
+                currentAdminUser = null;
+                showLoginScreen();
+                console.log('✅ 관리자 로그아웃 완료');
+            } catch (error) {
+                console.error('❌ 로그아웃 오류:', error);
+                alert('로그아웃 중 오류가 발생했습니다.');
+            }
+        }
+
+        // 화면 전환 함수들
+        function showLoginScreen() {
+            document.getElementById('loginScreen').style.display = 'flex';
+            document.getElementById('adminScreen').style.display = 'none';
+            document.getElementById('loginError').style.display = 'none';
+            document.getElementById('adminEmail').value = '';
+            document.getElementById('adminPassword').value = '';
+        }
+
+        function showAdminScreen() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('adminScreen').style.display = 'block';
+            
+            // 관리자 정보 표시
+            if (currentAdminUser) {
+                document.getElementById('adminUserInfo').textContent = 
+                    `${currentAdminUser.email} (관리자)`;
+            }
+            
+            // 데이터 로드
+            loadConsultations();
+        }
+
+        function showLoginError(message) {
+            const errorDiv = document.getElementById('loginError');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+
+        // 로그인 폼 이벤트 리스너
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginForm = document.getElementById('loginForm');
+            const loginBtn = document.getElementById('loginBtn');
+
+            loginForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const email = document.getElementById('adminEmail').value.trim();
+                const password = document.getElementById('adminPassword').value;
+
+                if (!email || !password) {
+                    showLoginError('이메일과 비밀번호를 모두 입력해주세요.');
+                    return;
+                }
+
+                // 로그인 버튼 비활성화
+                loginBtn.disabled = true;
+                loginBtn.textContent = '로그인 중...';
+
+                try {
+                    await adminLogin(email, password);
+                } finally {
+                    // 로그인 버튼 복원
+                    loginBtn.disabled = false;
+                    loginBtn.textContent = '로그인';
+                }
+            });
+
+            // 인증 상태 변화 감지
+            window.onAuthStateChanged(window.auth, async (user) => {
+                console.log('🔄 인증 상태 변화:', user ? user.email : '로그아웃됨');
+                
+                if (user) {
+                    // 로그인된 상태에서 관리자 권한 확인
+                    const isAdmin = await checkAdminPermission(user.email);
+                    
+                    if (isAdmin) {
+                        currentAdminUser = user;
+                        showAdminScreen();
+                    } else {
+                        // 관리자가 아니면 강제 로그아웃
+                        await window.signOut(window.auth);
+                        showLoginError('관리자 권한이 없습니다.');
+                        showLoginScreen();
+                    }
+                } else {
+                    // 로그아웃된 상태
+                    currentAdminUser = null;
+                    showLoginScreen();
+                }
+            });
+        });
+
+        // ========================================
+        // 📊 상담신청서 관리 시스템
+        // ========================================
+
         // 상담신청서 목록 로드
         async function loadConsultations() {
             try {
@@ -455,21 +862,38 @@
             return labels[time] || '';
         }
 
-        // Firebase 초기화 상태 확인 후 데이터 로드
-        function waitForFirebaseAndLoadData() {
-            if (window.db && window.collection && window.query) {
-                console.log('Firebase 초기화 완료, 데이터 로딩 시작');
-                loadConsultations();
+        // Firebase 초기화 확인
+        function waitForFirebaseInit() {
+            if (window.db && window.auth && window.onAuthStateChanged) {
+                console.log('🔥 Firebase 초기화 완료');
+                return true;
             } else {
-                console.log('Firebase 초기화 대기 중...');
-                setTimeout(waitForFirebaseAndLoadData, 500);
+                console.log('🔄 Firebase 초기화 대기 중...');
+                return false;
             }
         }
 
-        // 페이지 로드 시 데이터 로드
+        // 페이지 로드 시 초기화
         window.addEventListener('load', () => {
-            // Firebase 초기화 대기 후 데이터 로드
-            waitForFirebaseAndLoadData();
+            console.log('📄 페이지 로드 완료');
+            
+            // Lucide 아이콘 초기화
+            if (window.lucide) {
+                lucide.createIcons();
+                console.log('✨ Lucide 아이콘 초기화 완료');
+            }
+            
+            // Firebase 초기화 대기
+            function checkFirebase() {
+                if (waitForFirebaseInit()) {
+                    console.log('🚀 관리자 시스템 준비 완료');
+                    // 인증 상태는 onAuthStateChanged에서 자동 처리됨
+                } else {
+                    setTimeout(checkFirebase, 100);
+                }
+            }
+            
+            checkFirebase();
         });
     </script>
 </body>
