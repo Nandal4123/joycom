@@ -1571,6 +1571,50 @@
             color: #50B0B0;
         }
 
+        /* 지도 관련 스타일 */
+        .map-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, #4A90E2, #357ABD);
+            color: white;
+            text-decoration: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
+        }
+
+        .map-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(74, 144, 226, 0.4);
+            background: linear-gradient(135deg, #357ABD, #2968A3);
+            color: white;
+            text-decoration: none;
+        }
+
+        .map-container {
+            transition: transform 0.3s ease;
+        }
+
+        .map-container:hover {
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .map-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .map-btn {
+                width: 80%;
+                justify-content: center;
+            }
+        }
+
         /* Form Styles */
         .form-section {
             background: #FDFBF7;
@@ -2161,42 +2205,7 @@
         </div>
     </section>
 
-    <!-- 찾아오시는 길 Section -->
-    <section id="contact" class="section section-light fade-in">
-        <div class="container text-center">
-            <h2 class="section-title">📍 찾아오시는 길</h2>
-            <p class="section-subtitle">동백역에서 도보 1분, 접근성이 뛰어난 위치</p>
-            
-            <div class="contact-card">
-                <div class="grid-2">
-                    <div>
-                        <div class="contact-header">
-                            <i data-lucide="map-pin" style="color: #CC6666; width: 32px; height: 32px;"></i>
-                            <h3 class="contact-title">주소 및 교통</h3>
-                        </div>
-                        <div class="contact-info">
-                            <p><strong>주소:</strong><br>용인시 기흥구 동백3로11번길 3, 동백역타워 601호</p>
-                            <p><strong>지하철:</strong><br>동백역 2번 출구 도보 1분</p>
-                            <p><strong>버스:</strong><br>66-4 / 5003-B / 810 (서해그랑블 하차)</p>
-                        </div>
-                    </div>
 
-                    <div>
-                        <div class="contact-header">
-                            <i data-lucide="phone" style="color: #66CC66; width: 32px; height: 32px;"></i>
-                            <h3 class="contact-title">연락처 정보</h3>
-                        </div>
-                        <div class="contact-info">
-                            <p style="color: #6b7280; margin-bottom: 0.5rem;">상담 예약 및 문의</p>
-                            <a href="tel:031-275-3636" class="phone-link">031-275-3636</a>
-                            <p style="color: #6b7280; margin: 1.5rem 0 0.5rem;">홈페이지</p>
-                            <a href="https://www.joycom.or.kr" target="_blank" style="color: #66C6C6; text-decoration: none; font-size: 1.125rem;">www.joycom.or.kr</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <!-- 후기 게시판 Section -->
     <section id="reviews" class="section section-light fade-in">
@@ -2429,6 +2438,88 @@
                         <p style="color: #6b7280; font-size: 0.875rem; margin-top: 0.75rem;">💌 신청 후 24시간 내에 전화로 연락드립니다</p>
                     </div>
                 </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- 찾아오시는 길 Section -->
+    <section id="contact" class="section section-light fade-in">
+        <div class="container text-center">
+            <h2 class="section-title">📍 찾아오시는 길</h2>
+            <p class="section-subtitle">동백역에서 도보 1분, 접근성이 뛰어난 위치</p>
+            
+            <div class="contact-card">
+                <div class="grid-2">
+                    <div>
+                        <div class="contact-header">
+                            <i data-lucide="map-pin" style="color: #CC6666; width: 32px; height: 32px;"></i>
+                            <h3 class="contact-title">주소 및 교통</h3>
+                        </div>
+                        <div class="contact-info">
+                            <p><strong>주소:</strong><br>용인시 기흥구 동백3로11번길 3, 동백역타워 601호</p>
+                            <p><strong>지하철:</strong><br>동백역 2번 출구 도보 1분</p>
+                            <p><strong>버스:</strong><br>66-4 / 5003-B / 810 (서해그랑블 하차)</p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="contact-header">
+                            <i data-lucide="phone" style="color: #66CC66; width: 32px; height: 32px;"></i>
+                            <h3 class="contact-title">연락처 정보</h3>
+                        </div>
+                        <div class="contact-info">
+                            <p style="color: #6b7280; margin-bottom: 0.5rem;">상담 예약 및 문의</p>
+                            <a href="tel:031-275-3636" class="phone-link">031-275-3636</a>
+                            <p style="color: #6b7280; margin: 1.5rem 0 0.5rem;">홈페이지</p>
+                            <a href="https://www.joycom.or.kr" target="_blank" style="color: #66C6C6; text-decoration: none; font-size: 1.125rem;">www.joycom.or.kr</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 네이버지도 섹션 -->
+            <div class="map-section" style="margin-top: 3rem;">
+                <div class="contact-header" style="justify-content: center; margin-bottom: 2rem;">
+                    <i data-lucide="navigation" style="color: #4A90E2; width: 32px; height: 32px;"></i>
+                    <h3 class="contact-title">네이버지도로 길찾기</h3>
+                </div>
+                
+                <!-- 네이버지도 iframe -->
+                <div class="map-container" style="background: white; border-radius: 15px; padding: 1rem; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-bottom: 2rem;">
+                    <iframe 
+                        src="https://map.naver.com/v5/search/용인시%20기흥구%20동백3로11번길%203%20동백역타워?c=15,0,0,0,dh"
+                        width="100%" 
+                        height="400" 
+                        frameborder="0" 
+                        style="border:0; border-radius: 10px;"
+                        allowfullscreen
+                        loading="lazy">
+                    </iframe>
+                </div>
+
+                <!-- 지도 관련 버튼들 -->
+                <div class="map-actions" style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                    <a href="https://map.naver.com/v5/search/용인시%20기흥구%20동백3로11번길%203%20동백역타워" 
+                       target="_blank" 
+                       class="map-btn">
+                        <i data-lucide="external-link" style="width: 16px; height: 16px;"></i>
+                        네이버지도에서 보기
+                    </a>
+                    
+                    <a href="https://map.naver.com/v5/directions/-/-/place/37.2685,127.1562" 
+                       target="_blank" 
+                       class="map-btn">
+                        <i data-lucide="route" style="width: 16px; height: 16px;"></i>
+                        길찾기
+                    </a>
+                    
+                    <a href="https://map.kakao.com/?q=용인시%20기흥구%20동백3로11번길%203%20동백역타워" 
+                       target="_blank" 
+                       class="map-btn">
+                        <i data-lucide="map" style="width: 16px; height: 16px;"></i>
+                        카카오맵에서 보기
+                    </a>
+                </div>
             </div>
         </div>
     </section>
@@ -3230,4 +3321,5 @@ ${data.name}님, 상담신청이 완료되었습니다!
     </style>
 
 </body>
+</html>
 </html>
