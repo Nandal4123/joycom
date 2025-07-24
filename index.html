@@ -1900,6 +1900,332 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        /* 개인정보 동의 스타일 */
+        .privacy-consent-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            cursor: pointer;
+            background: #f9fafb;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid #e5e7eb;
+            transition: all 0.3s ease;
+        }
+
+        .privacy-consent-label:hover {
+            background: #f3f4f6;
+            border-color: #d1d5db;
+        }
+
+        .privacy-checkbox {
+            margin-top: 0.25rem;
+            flex-shrink: 0;
+        }
+
+        .privacy-text {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .privacy-title {
+            font-weight: 600;
+            color: #374151;
+            line-height: 1.5;
+            word-break: keep-all;
+            overflow-wrap: break-word;
+        }
+
+        .privacy-description {
+            color: #6b7280;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            line-height: 1.6;
+            word-break: keep-all;
+            overflow-wrap: break-word;
+        }
+
+        /* 모바일 최적화 */
+        @media (max-width: 768px) {
+            .privacy-consent-label {
+                padding: 0.75rem;
+                gap: 0.5rem;
+                border-radius: 0.375rem;
+            }
+
+            .privacy-title {
+                font-size: 0.9rem;
+                line-height: 1.4;
+            }
+
+            .privacy-description {
+                font-size: 0.8rem;
+                margin-top: 0.375rem;
+                line-height: 1.5;
+            }
+
+            .privacy-checkbox {
+                margin-top: 0.125rem;
+                transform: scale(0.9);
+            }
+        }
+
+        /* 매우 작은 화면 (아이폰 SE 등) */
+        @media (max-width: 480px) {
+            .privacy-consent-label {
+                padding: 0.5rem;
+                gap: 0.375rem;
+            }
+
+            .privacy-title {
+                font-size: 0.85rem;
+                line-height: 1.3;
+            }
+
+            .privacy-description {
+                font-size: 0.75rem;
+                line-height: 1.4;
+                margin-top: 0.25rem;
+            }
+        }
+
+        /* 네비게이션 모바일 최적화 */
+        @media (max-width: 768px) {
+            .nav-container {
+                padding: 0.75rem 1rem;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+
+            .logo {
+                gap: 0.5rem;
+            }
+
+            .logo-text h1 {
+                font-size: 1.1rem;
+            }
+
+            .logo-text p {
+                font-size: 0.7rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .nav-actions {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                flex-wrap: wrap;
+            }
+
+            .auth-buttons {
+                gap: 0.5rem;
+            }
+
+            .login-btn,
+            .signup-btn {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.8rem;
+                border-radius: 0.375rem;
+            }
+
+            .phone-btn {
+                padding: 0.5rem;
+                min-width: auto;
+                gap: 0.25rem;
+            }
+
+            .phone-number {
+                display: none;
+            }
+
+            .user-menu {
+                gap: 0.5rem;
+            }
+
+            .user-name {
+                font-size: 0.8rem;
+                max-width: 80px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            .logout-btn {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.8rem;
+            }
+        }
+
+        /* 매우 작은 모바일 화면 */
+        @media (max-width: 480px) {
+            .nav-container {
+                padding: 0.5rem;
+            }
+
+            .logo-text h1 {
+                font-size: 1rem;
+            }
+
+            .logo-text p {
+                display: none;
+            }
+
+            .auth-buttons {
+                flex-direction: column;
+                gap: 0.25rem;
+            }
+
+            .login-btn,
+            .signup-btn {
+                padding: 0.35rem 0.7rem;
+                font-size: 0.75rem;
+                min-width: 60px;
+            }
+
+            .phone-btn {
+                padding: 0.4rem;
+            }
+
+            .user-name {
+                max-width: 60px;
+                font-size: 0.75rem;
+            }
+
+            .logout-btn {
+                padding: 0.35rem 0.6rem;
+                font-size: 0.75rem;
+            }
+        }
+
+        /* 햄버거 메뉴 스타일 */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: #6b7280;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            transition: all 0.3s;
+        }
+
+        .mobile-menu-btn:hover {
+            background: #f3f4f6;
+            color: #66C6C6;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: block;
+            }
+        }
+
+        /* 모바일 메뉴 패널 */
+        .mobile-menu-panel {
+            position: fixed;
+            top: 0;
+            left: -100%;
+            width: 280px;
+            height: 100vh;
+            background: white;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            z-index: 9999;
+            transition: left 0.3s ease;
+            overflow-y: auto;
+        }
+
+        .mobile-menu-panel.active {
+            left: 0;
+        }
+
+        .mobile-menu-content {
+            padding: 1rem;
+        }
+
+        .mobile-menu-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+            margin-bottom: 1rem;
+        }
+
+        .mobile-menu-header span {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .mobile-menu-header button {
+            background: none;
+            border: none;
+            color: #6b7280;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            transition: all 0.3s;
+        }
+
+        .mobile-menu-header button:hover {
+            background: #f3f4f6;
+            color: #66C6C6;
+        }
+
+        .mobile-nav-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .mobile-nav-links li {
+            margin-bottom: 0.5rem;
+        }
+
+        .mobile-nav-links a {
+            display: block;
+            padding: 1rem;
+            text-decoration: none;
+            color: #6b7280;
+            font-weight: 500;
+            border-radius: 0.5rem;
+            transition: all 0.3s;
+        }
+
+        .mobile-nav-links a:hover {
+            background: #f3f4f6;
+            color: #66C6C6;
+        }
+
+        /* 오버레이 */
+        .mobile-menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.5);
+            z-index: 9998;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        @media (min-width: 769px) {
+            .mobile-menu-panel,
+            .mobile-menu-overlay {
+                display: none;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1922,6 +2248,9 @@
                 <li><a href="#consultation">상담신청</a></li>
                 <li><a href="#contact">오시는길</a></li>
             </ul>
+            <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="메뉴 열기">
+                <i data-lucide="menu" style="width: 20px; height: 20px;"></i>
+            </button>
             <div class="nav-actions">
                 <!-- 로그인 상태에 따라 표시/숨김 -->
                 <div id="auth-buttons" class="auth-buttons">
@@ -1934,10 +2263,32 @@
                 </div>
                 <button class="phone-btn">
                     <i data-lucide="phone" style="width: 16px; height: 16px;"></i>
-                    031-275-3636
+                    <span class="phone-number">031-275-3636</span>
                 </button>
             </div>
         </div>
+        
+        <!-- 모바일 메뉴 패널 -->
+        <div id="mobile-menu" class="mobile-menu-panel">
+            <div class="mobile-menu-content">
+                <div class="mobile-menu-header">
+                    <span>메뉴</span>
+                    <button onclick="toggleMobileMenu()" aria-label="메뉴 닫기">
+                        <i data-lucide="x" style="width: 20px; height: 20px;"></i>
+                    </button>
+                </div>
+                <ul class="mobile-nav-links">
+                    <li><a href="#about" onclick="toggleMobileMenu()">센터소개</a></li>
+                    <li><a href="#services" onclick="toggleMobileMenu()">상담프로그램</a></li>
+                    <li><a href="#reviews" onclick="toggleMobileMenu()">후기게시판</a></li>
+                    <li><a href="#consultation" onclick="toggleMobileMenu()">상담신청</a></li>
+                    <li><a href="#contact" onclick="toggleMobileMenu()">오시는길</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- 모바일 메뉴 오버레이 -->
+        <div id="mobile-menu-overlay" class="mobile-menu-overlay" onclick="toggleMobileMenu()"></div>
     </nav>
 
     <!-- Hero Section -->
@@ -1995,7 +2346,7 @@
         <div class="container">
             <div class="grid-2" style="align-items: center;">
                 <div>
-                    <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="상담을 통한 마음의 치유" style="width: 100%; height: 400px; object-fit: cover; border-radius: 50%; box-shadow: 0 20px 40px rgba(0,0,0,0.15); border: 4px solid white;">
+                    <img src="images/counseling.jpg" alt="상담을 통한 마음의 치유" style="width: 100%; height: 400px; object-fit: cover; border-radius: 50%; box-shadow: 0 20px 40px rgba(0,0,0,0.15); border: 4px solid white;">
                 </div>
                 <div>
                     <h2 class="section-title" style="text-align: left; margin-bottom: 1.5rem;">💝 상담을 통해 발견한 마음의 힘</h2>
@@ -2421,11 +2772,11 @@
                     </div>
 
                     <div class="form-group">
-                        <label style="display: flex; align-items: flex-start; gap: 0.75rem; cursor: pointer; background: #f9fafb; padding: 1rem; border-radius: 0.5rem; border: 1px solid #e5e7eb;">
-                            <input type="checkbox" name="privacyConsent" required style="margin-top: 0.25rem;">
-                            <div>
-                                <span style="font-weight: 600; color: #374151;">개인정보 수집 및 이용에 동의합니다 <span class="required">*</span></span>
-                                <p style="color: #6b7280; font-size: 0.875rem; margin-top: 0.25rem;">상담 서비스 제공을 위해 개인정보를 수집하며, 상담 완료 후 안전하게 폐기됩니다.</p>
+                        <label class="privacy-consent-label">
+                            <input type="checkbox" name="privacyConsent" required class="privacy-checkbox">
+                            <div class="privacy-text">
+                                <span class="privacy-title">개인정보 수집 및 이용에 동의합니다 <span class="required">*</span></span>
+                                <p class="privacy-description">상담 서비스 제공을 위해 개인정보를 수집하며, 상담 완료 후 안전하게 폐기됩니다.</p>
                             </div>
                         </label>
                     </div>
@@ -2579,6 +2930,42 @@
     <script>
         // Initialize Lucide icons
         lucide.createIcons();
+
+        // 모바일 메뉴 토글 함수
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            const overlay = document.getElementById('mobile-menu-overlay');
+            
+            if (mobileMenu && overlay) {
+                const isActive = mobileMenu.classList.contains('active');
+                
+                if (isActive) {
+                    // 메뉴 닫기
+                    mobileMenu.classList.remove('active');
+                    overlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                } else {
+                    // 메뉴 열기
+                    mobileMenu.classList.add('active');
+                    overlay.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                }
+            }
+        }
+
+        // ESC 키로 모바일 메뉴 닫기
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                const mobileMenu = document.getElementById('mobile-menu');
+                const overlay = document.getElementById('mobile-menu-overlay');
+                
+                if (mobileMenu && mobileMenu.classList.contains('active')) {
+                    mobileMenu.classList.remove('active');
+                    overlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            }
+        });
 
         // Scroll animation
         const observerOptions = {
