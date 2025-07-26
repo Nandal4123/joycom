@@ -6,6 +6,7 @@
     <title>조이상담코칭센터 | 용인 동백역 심리상담 전문기관</title>
     <meta name="description" content="심리상담, 아동·부부·개인상담까지! 조이상담코칭센터에서 전문 심리상담과 정서 치유를 경험하세요. 용인 동백역 도보 1분 거리.">
     <meta name="keywords" content="심리상담, 용인상담센터, 동백역상담, 부부상담, 아동상담, 청소년상담, 개인상담, 심리치료, 놀이치료, 미술치료">
+    <meta name="naver-site-verification" content="2a15f637bdf245a08cd98a6dc3d1c20fa4b6cec9" />
     
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
@@ -19,8 +20,21 @@
         // EmailJS 초기화 (상담신청 자동 확인 메일용)
         (function() {
             // EmailJS 초기화 - 실제 사용 시 PUBLIC_KEY를 발급받아 교체 필요
-            emailjs.init("YOUR_EMAILJS_PUBLIC_KEY"); // TODO: 실제 공개 키로 교체
-            console.log('📧 EmailJS 초기화 완료');
+            const publicKey = "YOUR_EMAILJS_PUBLIC_KEY"; // TODO: 실제 공개 키로 교체
+            
+            if (publicKey === "YOUR_EMAILJS_PUBLIC_KEY") {
+                console.warn('⚠️ EmailJS 공개 키가 설정되지 않았습니다. 이메일 알림이 작동하지 않습니다.');
+                window.emailjsConfigured = false;
+            } else {
+                try {
+                    emailjs.init(publicKey);
+                    console.log('📧 EmailJS 초기화 완료');
+                    window.emailjsConfigured = true;
+                } catch (error) {
+                    console.error('❌ EmailJS 초기화 실패:', error);
+                    window.emailjsConfigured = false;
+                }
+            }
         })();
     </script>
     
@@ -49,76 +63,113 @@
             measurementId: "G-GR2197VTJ4"
         };
 
-        // Firebase 초기화
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const auth = getAuth(app);
-        
-        // 전역으로 사용할 수 있도록 window 객체에 저장
-        window.db = db;
-        window.auth = auth;
-        window.addDoc = addDoc;
-        window.collection = collection;
-        window.serverTimestamp = serverTimestamp;
-        
-        // Auth 관련 함수들
-        window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
-        window.signInWithEmailAndPassword = signInWithEmailAndPassword;
-        window.signOut = signOut;
-        window.onAuthStateChanged = onAuthStateChanged;
-        window.updateProfile = updateProfile;
-        
-        // Firestore 쿼리 함수들
-        window.query = query;
-        window.orderBy = orderBy;
-        window.limit = limit;
-        window.getDocs = getDocs;
-        window.deleteDoc = deleteDoc;
-        window.doc = doc;
-        window.serverTimestamp = serverTimestamp;
+        // Firebase 초기화 with error handling
+        let app, db, auth;
+        try {
+            app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+            auth = getAuth(app);
+            
+            console.log('✅ Firebase 초기화 성공');
+            console.log('🔥 Firestore 연결 확인:', db ? '✅ 연결됨' : '❌ 연결 실패');
+            console.log('🔐 Auth 연결 확인:', auth ? '✅ 연결됨' : '❌ 연결 실패');
+            
+            // 전역으로 사용할 수 있도록 window 객체에 저장
+            window.db = db;
+            window.auth = auth;
+            window.addDoc = addDoc;
+            window.collection = collection;
+            window.serverTimestamp = serverTimestamp;
+            
+            // Auth 관련 함수들
+            window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
+            window.signInWithEmailAndPassword = signInWithEmailAndPassword;
+            window.signOut = signOut;
+            window.onAuthStateChanged = onAuthStateChanged;
+            window.updateProfile = updateProfile;
+            
+            // Firestore 쿼리 함수들
+            window.query = query;
+            window.orderBy = orderBy;
+            window.limit = limit;
+            window.getDocs = getDocs;
+            window.deleteDoc = deleteDoc;
+            window.doc = doc;
+            window.serverTimestamp = serverTimestamp;
+            
+            // Firebase 초기화 완료 플래그
+            window.firebaseInitialized = true;
+            
+            // Firebase 초기화 성공 후 시스템 초기화
+            initializeFirebaseServices();
+            
+        } catch (error) {
+            console.error('❌ Firebase 초기화 실패:', error);
+            window.firebaseInitialized = false;
+            window.firebaseError = error.message;
+            
+            // 사용자에게 알림
+            setTimeout(() => {
+                if (!window.firebaseInitialized) {
+                    alert('데이터베이스 연결에 문제가 있습니다. 페이지를 새로고침 해주세요.');
+                }
+            }, 5000);
+        }
 
-                    // ============================================
+        // Firebase 서비스 초기화 함수
+        function initializeFirebaseServices() {
+            console.log('🚀 Firebase 서비스 초기화 시작...');
+            
+            // ============================================
             // 인증 시스템 초기화 및 이벤트 리스너
             // ============================================
             
             console.log('🔐 인증 시스템 초기화 중...');
         
-        // 사용자 인증 상태 감지
-        onAuthStateChanged(auth, (user) => {
-            console.log('🔐 인증 상태 변경:', user ? `로그인됨 (${user.email})` : '로그아웃됨');
-            
-            const authButtons = document.getElementById('auth-buttons');
-            const userMenu = document.getElementById('user-menu');
-            const userName = document.getElementById('user-name');
-            const writeReviewBtn = document.getElementById('writeReviewBtn');
-            const loginPrompt = document.getElementById('loginPrompt');
-            const writeReviewSection = document.getElementById('writeReviewSection');
-
-            if (user) {
-                // 로그인 상태
-                console.log('✅ 사용자 로그인됨:', user.email);
-                if (authButtons) authButtons.style.display = 'none';
-                if (userMenu) userMenu.style.display = 'flex';
-                if (userName) userName.textContent = user.displayName || user.email.split('@')[0] + '님';
+            // 사용자 인증 상태 감지
+            onAuthStateChanged(auth, (user) => {
+                console.log('🔐 인증 상태 변경:', user ? `로그인됨 (${user.email})` : '로그아웃됨');
                 
-                // 후기 관련 UI 업데이트
-                if (writeReviewBtn) writeReviewBtn.style.display = 'block';
-                if (loginPrompt) loginPrompt.style.display = 'none';
-            } else {
-                // 로그아웃 상태
-                console.log('❌ 사용자 로그아웃됨');
-                if (authButtons) authButtons.style.display = 'flex';
-                if (userMenu) userMenu.style.display = 'none';
-                
-                // 후기 관련 UI 업데이트
-                if (writeReviewBtn) writeReviewBtn.style.display = 'none';
-                if (loginPrompt) loginPrompt.style.display = 'block';
-                if (writeReviewSection) writeReviewSection.style.display = 'none';
-            }
-        });
+                const authButtons = document.getElementById('auth-buttons');
+                const userMenu = document.getElementById('user-menu');
+                const userName = document.getElementById('user-name');
+                const writeReviewBtn = document.getElementById('writeReviewBtn');
+                const loginPrompt = document.getElementById('loginPrompt');
+                const writeReviewSection = document.getElementById('writeReviewSection');
 
-        // DOM 로드 완료 후 이벤트 리스너 설정
-        document.addEventListener('DOMContentLoaded', function() {
+                if (user) {
+                    // 로그인 상태
+                    console.log('✅ 사용자 로그인됨:', user.email);
+                    if (authButtons) authButtons.style.display = 'none';
+                    if (userMenu) userMenu.style.display = 'flex';
+                    if (userName) userName.textContent = user.displayName || user.email.split('@')[0] + '님';
+                    
+                    // 후기 관련 UI 업데이트
+                    if (writeReviewBtn) writeReviewBtn.style.display = 'block';
+                    if (loginPrompt) loginPrompt.style.display = 'none';
+                } else {
+                    // 로그아웃 상태
+                    console.log('❌ 사용자 로그아웃됨');
+                    if (authButtons) authButtons.style.display = 'flex';
+                    if (userMenu) userMenu.style.display = 'none';
+                    
+                    // 후기 관련 UI 업데이트
+                    if (writeReviewBtn) writeReviewBtn.style.display = 'none';
+                    if (loginPrompt) loginPrompt.style.display = 'block';
+                    if (writeReviewSection) writeReviewSection.style.display = 'none';
+                }
+            });
+
+            // DOM 로드 완료 후 이벤트 리스너 설정
+            document.addEventListener('DOMContentLoaded', function() {
+                initializeAuthSystem();
+                initializeReviewSystem();
+            });
+        }
+
+        // 인증 시스템 초기화
+        function initializeAuthSystem() {
+            console.log('🔐 인증 이벤트 리스너 설정 중...');
             
             // 모달 관련 요소들
             const authModal = document.getElementById('authModal');
@@ -313,487 +364,7 @@
                     submitBtn.textContent = '회원가입';
                 }
             }
-
-            // ============================================
-            // 후기 게시판 시스템
-            // ============================================
-            
-            console.log('📝 후기 게시판 시스템 초기화 중...');
-            
-            // 후기 관련 요소들
-            const writeReviewSection = document.getElementById('writeReviewSection');
-            const writeReviewBtn = document.getElementById('writeReviewBtn');
-            const loginPrompt = document.getElementById('loginPrompt');
-            const loginForReviewBtn = document.getElementById('loginForReview');
-            const cancelReviewBtn = document.getElementById('cancelReview');
-            const reviewForm = document.getElementById('reviewForm');
-            const reviewContent = document.getElementById('reviewContent');
-            const charCount = document.getElementById('charCount');
-            const reviewsList = document.getElementById('reviewsList');
-            const reviewCount = document.getElementById('reviewCount');
-            const loadMoreBtn = document.getElementById('loadMoreBtn');
-            const loadMoreContainer = document.querySelector('.load-more-container');
-
-            let currentPage = 0;
-            const REVIEWS_PER_PAGE = 5;
-
-            // 후기 관련 UI 업데이트는 메인 onAuthStateChanged에서 처리
-            // (중복 제거됨)
-
-            // 후기 작성 버튼 클릭
-            writeReviewBtn?.addEventListener('click', () => {
-                writeReviewSection.style.display = 'block';
-                reviewForm.reset();
-                updateCharCount();
-                document.getElementById('reviewTitle').focus();
-            });
-
-            // 로그인 유도 버튼 클릭
-            loginForReviewBtn?.addEventListener('click', () => {
-                showLoginModal();
-            });
-
-            // 후기 작성 취소
-            cancelReviewBtn?.addEventListener('click', () => {
-                writeReviewSection.style.display = 'none';
-                reviewForm.reset();
-            });
-
-            // 글자 수 카운터
-            reviewContent?.addEventListener('input', updateCharCount);
-
-            function updateCharCount() {
-                const current = reviewContent.value.length;
-                charCount.textContent = current;
-                
-                if (current > 900) {
-                    charCount.style.color = '#dc2626';
-                } else if (current > 800) {
-                    charCount.style.color = '#f59e0b';
-                } else {
-                    charCount.style.color = '#6b7280';
-                }
-            }
-
-            // 후기 폼 제출
-            reviewForm?.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                await submitReview();
-            });
-
-            // ============================================
-            // ⭐ 별점 시스템 초기화
-            // ============================================
-            
-            console.log('⭐ 별점 시스템 초기화 중...');
-            initializeStarRating();
-
-            // 후기 제출 함수
-            async function submitReview() {
-                console.log('📝 후기 제출 시작...');
-                
-                const user = auth.currentUser;
-                console.log('👤 현재 사용자:', user ? `${user.email} (${user.uid})` : '로그인되지 않음');
-                
-                if (!user) {
-                    console.error('❌ 로그인 필요');
-                    alert('로그인이 필요합니다.');
-                    return;
-                }
-
-                const title = document.getElementById('reviewTitle').value.trim();
-                const content = document.getElementById('reviewContent').value.trim();
-                const rating = document.querySelector('input[name="rating"]:checked')?.value;
-                const submitBtn = document.querySelector('#reviewForm .submit-btn');
-
-                console.log('📋 입력 데이터:', { 
-                    title: title, 
-                    contentLength: content.length, 
-                    rating: rating 
-                });
-
-                if (!title || !content || !rating) {
-                    console.error('❌ 필수 항목 누락');
-                    alert('모든 필수 항목을 입력해주세요.');
-                    return;
-                }
-
-                try {
-                    submitBtn.disabled = true;
-                    submitBtn.textContent = '등록 중...';
-                    
-                    console.log('🔄 Firebase 연결 상태 확인...');
-                    console.log('- Firebase Auth:', auth ? '✅ 연결됨' : '❌ 연결 안됨');
-                    console.log('- Firestore:', db ? '✅ 연결됨' : '❌ 연결 안됨');
-
-                    const reviewData = {
-                        title: title,
-                        content: content,
-                        rating: parseInt(rating),
-                        authorId: user.uid,
-                        authorName: user.displayName || user.email.split('@')[0],
-                        authorEmail: user.email,
-                        createdAt: serverTimestamp(),
-                        updatedAt: serverTimestamp(),
-                        status: 'published' // published, pending, deleted
-                    };
-
-                    console.log('💾 Firestore에 저장할 데이터:', {
-                        ...reviewData,
-                        createdAt: '[ServerTimestamp]',
-                        updatedAt: '[ServerTimestamp]'
-                    });
-
-                    console.log('📤 Firestore에 데이터 저장 중...');
-                    const docRef = await addDoc(collection(db, 'reviews'), reviewData);
-                    console.log('✅ 후기 등록 성공! 문서 ID:', docRef.id);
-
-                    alert('후기가 성공적으로 등록되었습니다!');
-                    
-                    // 폼 초기화 및 숨기기
-                    reviewForm.reset();
-                    writeReviewSection.style.display = 'none';
-                    
-                    // 후기 목록 새로고침
-                    console.log('🔄 후기 목록 새로고침...');
-                    await loadReviews(true);
-
-                } catch (error) {
-                    console.error('❌ 후기 등록 오류 상세 정보:');
-                    console.error('- Error Code:', error.code);
-                    console.error('- Error Message:', error.message);
-                    console.error('- Full Error:', error);
-                    
-                    let errorMessage = '후기 등록 중 오류가 발생했습니다.';
-                    
-                    switch (error.code) {
-                        case 'permission-denied':
-                            errorMessage = '권한이 없습니다. 로그인 상태를 확인해주세요.';
-                            break;
-                        case 'unauthenticated':
-                            errorMessage = '로그인이 필요합니다.';
-                            break;
-                        case 'failed-precondition':
-                            errorMessage = 'Firestore 규칙 검증에 실패했습니다.';
-                            break;
-                        case 'unavailable':
-                            errorMessage = '네트워크 연결을 확인해주세요.';
-                            break;
-                        default:
-                            errorMessage += ` (${error.code || '알 수 없는 오류'})`;
-                    }
-                    
-                    alert(errorMessage);
-                } finally {
-                    submitBtn.disabled = false;
-                    submitBtn.textContent = '후기 등록';
-                }
-            }
-
-            // 후기 목록 로드
-            async function loadReviews(reset = false) {
-                try {
-                    if (reset) {
-                        currentPage = 0;
-                        reviewsList.innerHTML = '<div class="loading-message">후기를 불러오는 중...</div>';
-                    }
-
-                    const reviewsQuery = query(
-                        collection(db, 'reviews'),
-                        orderBy('createdAt', 'desc'),
-                        limit(REVIEWS_PER_PAGE)
-                    );
-
-                    const querySnapshot = await getDocs(reviewsQuery);
-                    const reviews = [];
-
-                    querySnapshot.forEach((doc) => {
-                        reviews.push({
-                            id: doc.id,
-                            ...doc.data()
-                        });
-                    });
-
-                    if (reset) {
-                        reviewsList.innerHTML = '';
-                    }
-
-                    if (reviews.length === 0 && currentPage === 0) {
-                        reviewsList.innerHTML = `
-                            <div class="empty-message">
-                                <p>아직 등록된 후기가 없습니다.</p>
-                                <p>첫 번째 후기를 작성해보세요! 🌟</p>
-                            </div>
-                        `;
-                        reviewCount.textContent = '0';
-                        loadMoreContainer.style.display = 'none';
-                        return;
-                    }
-
-                    reviews.forEach(review => {
-                        const reviewElement = createReviewElement(review);
-                        reviewsList.appendChild(reviewElement);
-                    });
-
-                    // 후기 수 업데이트
-                    const totalQuery = query(collection(db, 'reviews'));
-                    const totalSnapshot = await getDocs(totalQuery);
-                    reviewCount.textContent = totalSnapshot.size;
-
-                    // 더보기 버튼 표시/숨김
-                    if (reviews.length === REVIEWS_PER_PAGE) {
-                        loadMoreContainer.style.display = 'block';
-                    } else {
-                        loadMoreContainer.style.display = 'none';
-                    }
-
-                } catch (error) {
-                    console.error('후기 로드 오류:', error);
-                    reviewsList.innerHTML = `
-                        <div class="empty-message">
-                            <p>후기를 불러오는 중 오류가 발생했습니다.</p>
-                            <button onclick="loadReviews(true)" class="link-btn">다시 시도</button>
-                        </div>
-                    `;
-                }
-            }
-
-            // 후기 아이템 생성
-            function createReviewElement(review) {
-                const reviewDiv = document.createElement('div');
-                reviewDiv.className = 'review-item';
-                reviewDiv.dataset.reviewId = review.id;
-
-                const createdAt = review.createdAt?.toDate ? 
-                    review.createdAt.toDate() : 
-                    new Date(review.createdAt);
-                
-                const formattedDate = createdAt.toLocaleDateString('ko-KR', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                });
-
-                const stars = '⭐'.repeat(review.rating);
-                const authorInitial = review.authorName.charAt(0).toUpperCase();
-                const currentUser = auth.currentUser;
-                const isAuthor = currentUser && currentUser.uid === review.authorId;
-
-                reviewDiv.innerHTML = `
-                    <div class="review-header">
-                        <div class="review-author">
-                            <div class="author-avatar">${authorInitial}</div>
-                            <div class="author-info">
-                                <h4>${review.authorName}</h4>
-                                <div class="review-date">${formattedDate}</div>
-                            </div>
-                        </div>
-                        <div class="review-rating">${stars}</div>
-                    </div>
-                    <h3 class="review-title">${review.title}</h3>
-                    <div class="review-content">${review.content}</div>
-                    ${isAuthor ? `
-                        <div class="review-actions">
-                            <button class="action-btn edit" onclick="editReview('${review.id}')">수정</button>
-                            <button class="action-btn delete" onclick="deleteReview('${review.id}')">삭제</button>
-                        </div>
-                    ` : ''}
-                `;
-
-                return reviewDiv;
-            }
-
-            // 더보기 버튼
-            loadMoreBtn?.addEventListener('click', async () => {
-                currentPage++;
-                // TODO: 페이징 구현 (현재는 기본 로드만)
-                await loadReviews();
-            });
-
-            // 후기 수정 (전역 함수)
-            window.editReview = async function(reviewId) {
-                // TODO: 수정 기능 구현
-                alert('수정 기능은 곧 업데이트 예정입니다.');
-            };
-
-            // 후기 삭제 (전역 함수)
-            window.deleteReview = async function(reviewId) {
-                console.log('🗑️ 후기 삭제 시작:', reviewId);
-                
-                const user = auth.currentUser;
-                console.log('👤 현재 사용자:', user ? `${user.email} (${user.uid})` : '로그인되지 않음');
-                
-                if (!user) {
-                    console.error('❌ 로그인 필요');
-                    alert('로그인이 필요합니다.');
-                    return;
-                }
-
-                if (!confirm('정말 이 후기를 삭제하시겠습니까?\n삭제된 후기는 복구할 수 없습니다.')) {
-                    console.log('👤 사용자가 삭제 취소');
-                    return;
-                }
-
-                try {
-                    console.log('🔄 Firebase 연결 상태 확인...');
-                    console.log('- Firestore:', db ? '✅ 연결됨' : '❌ 연결 안됨');
-                    console.log('- deleteDoc 함수:', deleteDoc ? '✅ 사용 가능' : '❌ 사용 불가');
-
-                    console.log('🗑️ Firestore에서 후기 삭제 중...');
-                    
-                    // Firestore에서 실제 문서 삭제
-                    const reviewRef = doc(db, 'reviews', reviewId);
-                    await deleteDoc(reviewRef);
-                    
-                    console.log('✅ 후기 삭제 성공! 문서 ID:', reviewId);
-                    alert('후기가 성공적으로 삭제되었습니다.');
-                    
-                    // 후기 목록 새로고침
-                    console.log('🔄 후기 목록 새로고침...');
-                    await loadReviews(true);
-
-                } catch (error) {
-                    console.error('❌ 후기 삭제 오류 상세 정보:');
-                    console.error('- Error Code:', error.code);
-                    console.error('- Error Message:', error.message);
-                    console.error('- Full Error:', error);
-                    
-                    let errorMessage = '후기 삭제 중 오류가 발생했습니다.';
-                    
-                    switch (error.code) {
-                        case 'permission-denied':
-                            errorMessage = '권한이 없습니다. 본인이 작성한 후기만 삭제할 수 있습니다.';
-                            break;
-                        case 'not-found':
-                            errorMessage = '삭제하려는 후기를 찾을 수 없습니다.';
-                            break;
-                        case 'unauthenticated':
-                            errorMessage = '로그인이 필요합니다.';
-                            break;
-                        case 'unavailable':
-                            errorMessage = '네트워크 연결을 확인해주세요.';
-                            break;
-                        default:
-                            errorMessage += ` (${error.code || '알 수 없는 오류'})`;
-                    }
-                    
-                    alert(errorMessage);
-                }
-            };
-
-            // 페이지 로드시 후기 목록 로드
-            loadReviews(true);
-
-            // ============================================
-            // ⭐ 별점 시스템 함수들
-            // ============================================
-            
-            function initializeStarRating() {
-                const starRating = document.getElementById('starRating');
-                const ratingText = document.getElementById('ratingText');
-                
-                if (!starRating || !ratingText) {
-                    console.log('⭐ 별점 요소를 찾을 수 없습니다');
-                    return;
-                }
-
-                const labels = starRating.querySelectorAll('label');
-                const inputs = starRating.querySelectorAll('input[type="radio"]');
-
-                console.log('⭐ 별점 요소 개수:', labels.length);
-
-                // 별점 텍스트 매핑
-                const ratingTexts = {
-                    1: '⭐ 매우 불만족',
-                    2: '⭐⭐ 불만족',  
-                    3: '⭐⭐⭐ 보통',
-                    4: '⭐⭐⭐⭐ 만족',
-                    5: '⭐⭐⭐⭐⭐ 매우 만족'
-                };
-
-                // 각 별에 이벤트 리스너 추가
-                labels.forEach((label, index) => {
-                    const rating = parseInt(label.getAttribute('data-rating'));
-                    
-                    // 클릭 이벤트
-                    label.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        console.log(`⭐ ${rating}점 선택됨`);
-                        
-                        // 해당 라디오 버튼 선택
-                        const targetInput = document.getElementById(`star${rating}`);
-                        if (targetInput) {
-                            targetInput.checked = true;
-                        }
-                        
-                        // 별점 표시 업데이트
-                        updateStarDisplay(rating);
-                        
-                        // 텍스트 업데이트
-                        ratingText.textContent = ratingTexts[rating];
-                        ratingText.style.color = '#f59e0b';
-                        ratingText.style.fontWeight = '600';
-                    });
-
-                    // 호버 이벤트
-                    label.addEventListener('mouseenter', function() {
-                        previewStarRating(rating);
-                    });
-                });
-
-                // 별점 컨테이너에서 마우스가 벗어날 때
-                starRating.addEventListener('mouseleave', function() {
-                    const checkedInput = starRating.querySelector('input:checked');
-                    if (checkedInput) {
-                        updateStarDisplay(parseInt(checkedInput.value));
-                    } else {
-                        resetStarDisplay();
-                    }
-                });
-
-                console.log('⭐ 별점 시스템 초기화 완료');
-            }
-
-            function updateStarDisplay(rating) {
-                const labels = document.querySelectorAll('#starRating label');
-                
-                labels.forEach((label, index) => {
-                    const starValue = parseInt(label.getAttribute('data-rating'));
-                    
-                    if (starValue <= rating) {
-                        label.style.color = '#f59e0b'; // 활성화된 별
-                        label.classList.add('active');
-                    } else {
-                        label.style.color = '#d1d5db'; // 비활성화된 별
-                        label.classList.remove('active');
-                    }
-                });
-            }
-
-            function previewStarRating(rating) {
-                const labels = document.querySelectorAll('#starRating label');
-                
-                labels.forEach((label, index) => {
-                    const starValue = parseInt(label.getAttribute('data-rating'));
-                    
-                    if (starValue <= rating) {
-                        label.style.color = '#fbbf24'; // 호버 색상
-                    } else {
-                        label.style.color = '#d1d5db';
-                    }
-                });
-            }
-
-            function resetStarDisplay() {
-                const labels = document.querySelectorAll('#starRating label');
-                labels.forEach(label => {
-                    label.style.color = '#d1d5db';
-                    label.classList.remove('active');
-                });
-                
-                document.getElementById('ratingText').textContent = '';
-            }
-        });
+        }
     </script>
     
     <style>
@@ -2985,40 +2556,154 @@
             observer.observe(el);
         });
 
-        // Firebase에 상담신청서 저장하는 함수
+        // Firebase에 상담신청서 저장하는 함수 (개선된 버전)
         async function saveConsultationToFirebase(consultationData) {
             try {
-                // Firestore에 데이터 저장
-                const docRef = await window.addDoc(window.collection(window.db, 'consultations'), {
+                console.log('🔄 상담신청서 저장 시작...');
+                console.log('📋 전송할 데이터:', consultationData);
+                
+                // Firebase 초기화 상태 확인
+                if (!window.firebaseInitialized) {
+                    throw new Error(`Firebase 초기화 오류: ${window.firebaseError || '알 수 없는 오류'}`);
+                }
+                
+                // 필수 Firebase 객체 확인
+                if (!window.db) {
+                    throw new Error('Firestore 데이터베이스에 연결할 수 없습니다.');
+                }
+                
+                if (!window.addDoc || !window.collection || !window.serverTimestamp) {
+                    throw new Error('Firebase 함수들이 로드되지 않았습니다.');
+                }
+                
+                console.log('✅ Firebase 연결 상태 확인 완료');
+
+                // 데이터 구조 검증
+                const requiredFields = ['name', 'phone', 'consultationType', 'consultationMethod', 'privacyConsent'];
+                const missingFields = requiredFields.filter(field => !consultationData[field]);
+                
+                if (missingFields.length > 0) {
+                    throw new Error(`필수 항목이 누락되었습니다: ${missingFields.join(', ')}`);
+                }
+
+                // Firestore에 저장할 데이터 구성
+                const dataToSave = {
                     ...consultationData,
                     status: 'pending',
                     createdAt: window.serverTimestamp(),
-                    updatedAt: window.serverTimestamp()
-                });
+                    updatedAt: window.serverTimestamp(),
+                    source: 'website',
+                    version: '1.0'
+                };
 
-                console.log('상담신청서가 성공적으로 저장되었습니다. ID:', docRef.id);
+                console.log('💾 Firestore에 저장 시도 중...');
+                
+                // Firestore에 데이터 저장
+                const docRef = await window.addDoc(window.collection(window.db, 'consultations'), dataToSave);
+                
+                console.log('✅ 상담신청서 저장 성공! 문서 ID:', docRef.id);
 
-                // 알림 발송
+                // 알림 발송 (비동기로 처리하여 사용자 경험 개선)
                 const applicationData = {
                     ...consultationData,
                     id: docRef.id
                 };
                 
-                await sendNotifications(applicationData);
+                // 알림 발송을 백그라운드에서 처리
+                sendNotifications(applicationData).catch(error => {
+                    console.error('⚠️ 알림 발송 실패 (저장은 성공):', error);
+                });
 
                 return {
                     success: true,
                     id: docRef.id,
-                    message: '상담신청이 접수되었습니다.'
+                    message: '상담신청이 성공적으로 접수되었습니다.'
                 };
 
             } catch (error) {
-                console.error('상담신청서 저장 중 오류 발생:', error);
+                console.error('❌ 상담신청서 저장 실패:', error);
+                
+                // 오류 유형별 메시지 처리
+                let userMessage = '신청 접수 중 오류가 발생했습니다.';
+                
+                if (error.code === 'permission-denied') {
+                    userMessage = '권한이 없습니다. 잠시 후 다시 시도해주세요.';
+                } else if (error.code === 'unavailable') {
+                    userMessage = '현재 서버에 연결할 수 없습니다. 네트워크 연결을 확인해주세요.';
+                } else if (error.message.includes('Firebase')) {
+                    userMessage = '데이터베이스 연결에 문제가 있습니다. 페이지를 새로고침 후 다시 시도해주세요.';
+                } else if (error.message.includes('필수 항목')) {
+                    userMessage = error.message;
+                }
+                
+                // 폴백: 로컬 저장 및 관리자 알림
+                await handleSaveFailure(consultationData, error);
+                
                 return {
                     success: false,
                     error: error.message,
-                    message: '신청 접수 중 오류가 발생했습니다. 다시 시도해주세요.'
+                    message: userMessage + '\n\n긴급한 경우 직접 전화주세요: 031-275-3636'
                 };
+            }
+        }
+        
+        // 저장 실패 시 폴백 처리
+        async function handleSaveFailure(consultationData, error) {
+            try {
+                console.log('🚨 저장 실패 폴백 처리 시작...');
+                
+                // 1. 로컬 스토리지에 임시 저장
+                const failedSubmissions = JSON.parse(localStorage.getItem('failedConsultations') || '[]');
+                failedSubmissions.push({
+                    data: consultationData,
+                    error: error.message,
+                    timestamp: new Date().toISOString(),
+                    id: Date.now()
+                });
+                localStorage.setItem('failedConsultations', JSON.stringify(failedSubmissions));
+                
+                // 2. 관리자에게 긴급 알림
+                const emergencyMessage = `
+🚨 상담신청 저장 실패 알림!
+
+신청자: ${consultationData.name}
+연락처: ${consultationData.phone}
+오류: ${error.message}
+시간: ${new Date().toLocaleString('ko-KR')}
+
+즉시 확인 필요!
+                `;
+                
+                // 브라우저 알림
+                if ('Notification' in window && Notification.permission === 'granted') {
+                    new Notification('🚨 상담신청 저장 실패!', {
+                        body: `${consultationData.name}님의 신청이 저장되지 않았습니다.`,
+                        requireInteraction: true
+                    });
+                }
+                
+                // 콘솔에 눈에 띄는 알림
+                console.error(`
+🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨
+   상담신청 저장 실패!
+   신청자: ${consultationData.name}
+   연락처: ${consultationData.phone}
+   즉시 수동으로 기록 필요!
+🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨
+                `);
+                
+                // 관리자 이메일 알림 (mailto)
+                const subject = encodeURIComponent('[긴급] 상담신청 저장 실패');
+                const body = encodeURIComponent(emergencyMessage);
+                const mailtoLink = `mailto:admin@joycom.or.kr?subject=${subject}&body=${body}`;
+                
+                // 1초 후 이메일 앱 열기
+                setTimeout(() => {
+                    window.open(mailtoLink, '_blank');
+                }, 1000);
+                
+            } catch (fallbackError) {
+                console.error('폴백 처리도 실패:', fallbackError);
             }
         }
 
@@ -3457,45 +3142,109 @@ ${data.name}님, 상담신청이 완료되었습니다!
             };
         }
 
-        // Form submission with Firebase integration
+        // Form submission with improved error handling
         document.getElementById('consultationForm').addEventListener('submit', async function(e) {
             e.preventDefault();
+            
+            console.log('📝 상담신청 폼 제출 시작...');
             
             const formData = new FormData(this);
             const data = Object.fromEntries(formData);
             
+            console.log('📋 폼 데이터:', data);
+            
             // 데이터 유효성 검증
             const validation = validateConsultationData(data);
             if (!validation.isValid) {
-                alert(validation.errors.join('\n'));
+                console.error('❌ 데이터 유효성 검증 실패:', validation.errors);
+                alert('다음 항목을 확인해주세요:\n\n' + validation.errors.join('\n'));
                 return;
             }
+            
+            console.log('✅ 데이터 유효성 검증 통과');
 
             // 제출 버튼 상태 변경
             const submitBtn = this.querySelector('.submit-btn');
             const originalText = submitBtn.innerHTML;
             
-            submitBtn.innerHTML = '<div style="width: 20px; height: 20px; border: 2px solid #fff; border-top: 2px solid transparent; border-radius: 50%; animation: spin 1s linear infinite; margin-right: 0.5rem;"></div>신청 중...';
+            submitBtn.innerHTML = `
+                <div style="display: inline-flex; align-items: center; gap: 0.5rem;">
+                    <div style="width: 16px; height: 16px; border: 2px solid #fff; border-top: 2px solid transparent; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+                    신청 처리 중...
+                </div>
+            `;
             submitBtn.disabled = true;
 
             try {
+                console.log('🔄 Firebase 저장 시도 중...');
+                
                 // Firebase에 데이터 저장
                 const result = await saveConsultationToFirebase(data);
 
                 if (result.success) {
-                    alert(`${data.name}님의 상담신청이 성공적으로 접수되었습니다.\n\n신청 ID: ${result.id}\n\n24시간 내에 담당자가 연락드리겠습니다.`);
+                    console.log('✅ 상담신청 완료:', result.id);
+                    
+                    // 성공 메시지 표시
+                    const successMessage = `
+🎉 ${data.name}님, 상담신청이 완료되었습니다!
+
+📋 신청 정보:
+• 신청 ID: ${result.id}
+• 상담 유형: ${getConsultationTypeLabel(data.consultationType)}
+• 상담 방식: ${getConsultationMethodLabel(data.consultationMethod)}
+• 연락처: ${data.phone}
+
+⏰ 24시간 내에 담당자가 연락드리겠습니다.
+📞 급한 경우: 031-275-3636
+
+감사합니다! 🌟
+                    `;
+                    
+                    alert(successMessage);
                     this.reset(); // 폼 초기화
+                    
+                    // 페이지 상단으로 스크롤
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    
                 } else {
-                    alert(result.message || '신청 접수 중 오류가 발생했습니다.');
+                    console.error('❌ 저장 실패:', result.message);
+                    
+                    const errorMessage = `
+신청 처리 중 문제가 발생했습니다.
+
+오류: ${result.message}
+
+📞 직접 전화 연락 부탁드립니다:
+031-275-3636
+
+불편을 드려 죄송합니다.
+                    `;
+                    
+                    alert(errorMessage);
                 }
 
             } catch (error) {
-                console.error('폼 제출 중 오류:', error);
-                alert('네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+                console.error('❌ 폼 제출 중 예상치 못한 오류:', error);
+                
+                const networkErrorMessage = `
+네트워크 연결 오류가 발생했습니다.
+
+가능한 해결 방법:
+1. 인터넷 연결을 확인해주세요
+2. 페이지를 새로고침 후 다시 시도해주세요
+3. 브라우저 캐시를 삭제해보세요
+
+📞 문제가 계속되면 직접 전화주세요:
+031-275-3636
+                `;
+                
+                alert(networkErrorMessage);
+                
             } finally {
                 // 버튼 상태 복원
                 submitBtn.innerHTML = originalText;
                 submitBtn.disabled = false;
+                console.log('🔄 폼 제출 처리 완료');
             }
         });
 
@@ -3522,6 +3271,652 @@ ${data.name}님, 상담신청이 완료되었습니다!
             }
         `;
         document.head.appendChild(style);
+
+        // 후기 게시판 시스템 초기화
+        function initializeReviewSystem() {
+            console.log('📝 후기 게시판 시스템 초기화 중...');
+            
+            // 후기 관련 요소들
+            const writeReviewSection = document.getElementById('writeReviewSection');
+            const writeReviewBtn = document.getElementById('writeReviewBtn');
+            const loginPrompt = document.getElementById('loginPrompt');
+            const loginForReviewBtn = document.getElementById('loginForReview');
+            const cancelReviewBtn = document.getElementById('cancelReview');
+            const reviewForm = document.getElementById('reviewForm');
+            const reviewContent = document.getElementById('reviewContent');
+            const charCount = document.getElementById('charCount');
+            const reviewsList = document.getElementById('reviewsList');
+            const reviewCount = document.getElementById('reviewCount');
+            const loadMoreBtn = document.getElementById('loadMoreBtn');
+            const loadMoreContainer = document.querySelector('.load-more-container');
+
+            let currentPage = 0;
+            const REVIEWS_PER_PAGE = 5;
+
+            // 후기 작성 버튼 클릭
+            writeReviewBtn?.addEventListener('click', () => {
+                writeReviewSection.style.display = 'block';
+                reviewForm.reset();
+                updateCharCount();
+                document.getElementById('reviewTitle').focus();
+            });
+
+            // 로그인 유도 버튼 클릭
+            loginForReviewBtn?.addEventListener('click', () => {
+                const authModal = document.getElementById('authModal');
+                const modalTitle = document.getElementById('modalTitle');
+                const loginForm = document.getElementById('loginForm');
+                const signupForm = document.getElementById('signupForm');
+                
+                if (authModal && modalTitle && loginForm && signupForm) {
+                    modalTitle.textContent = '로그인';
+                    loginForm.style.display = 'block';
+                    signupForm.style.display = 'none';
+                    authModal.style.display = 'flex';
+                    document.getElementById('loginEmail')?.focus();
+                }
+            });
+
+            // 후기 작성 취소
+            cancelReviewBtn?.addEventListener('click', () => {
+                writeReviewSection.style.display = 'none';
+                reviewForm.reset();
+            });
+
+            // 글자 수 카운터
+            reviewContent?.addEventListener('input', updateCharCount);
+
+            function updateCharCount() {
+                const current = reviewContent.value.length;
+                charCount.textContent = current;
+                
+                if (current > 900) {
+                    charCount.style.color = '#dc2626';
+                } else if (current > 800) {
+                    charCount.style.color = '#f59e0b';
+                } else {
+                    charCount.style.color = '#6b7280';
+                }
+            }
+
+            // 후기 폼 제출
+            reviewForm?.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                await submitReview();
+            });
+
+            // ⭐ 별점 시스템 초기화
+            console.log('⭐ 별점 시스템 초기화 중...');
+            initializeStarRating();
+
+            // 후기 제출 함수
+            async function submitReview() {
+                console.log('📝 후기 제출 시작...');
+                
+                const user = auth.currentUser;
+                console.log('👤 현재 사용자:', user ? `${user.email} (${user.uid})` : '로그인되지 않음');
+                
+                if (!user) {
+                    console.error('❌ 로그인 필요');
+                    alert('로그인이 필요합니다.');
+                    return;
+                }
+
+                const title = document.getElementById('reviewTitle').value.trim();
+                const content = document.getElementById('reviewContent').value.trim();
+                const rating = document.querySelector('input[name="rating"]:checked')?.value;
+                const submitBtn = document.querySelector('#reviewForm .submit-btn');
+
+                console.log('📋 입력 데이터:', { 
+                    title: title, 
+                    contentLength: content.length, 
+                    rating: rating 
+                });
+
+                if (!title || !content || !rating) {
+                    console.error('❌ 필수 항목 누락');
+                    alert('모든 필수 항목을 입력해주세요.');
+                    return;
+                }
+
+                try {
+                    submitBtn.disabled = true;
+                    submitBtn.textContent = '등록 중...';
+                    
+                    console.log('🔄 Firebase 연결 상태 확인...');
+                    console.log('- Firebase Auth:', auth ? '✅ 연결됨' : '❌ 연결 안됨');
+                    console.log('- Firestore:', db ? '✅ 연결됨' : '❌ 연결 안됨');
+
+                    const reviewData = {
+                        title: title,
+                        content: content,
+                        rating: parseInt(rating),
+                        authorId: user.uid,
+                        authorName: user.displayName || user.email.split('@')[0],
+                        authorEmail: user.email,
+                        createdAt: serverTimestamp(),
+                        updatedAt: serverTimestamp(),
+                        status: 'published'
+                    };
+
+                    console.log('💾 Firestore에 저장할 데이터:', {
+                        ...reviewData,
+                        createdAt: '[ServerTimestamp]',
+                        updatedAt: '[ServerTimestamp]'
+                    });
+
+                    console.log('📤 Firestore에 데이터 저장 중...');
+                    const docRef = await addDoc(collection(db, 'reviews'), reviewData);
+                    console.log('✅ 후기 등록 성공! 문서 ID:', docRef.id);
+
+                    alert('후기가 성공적으로 등록되었습니다!');
+                    
+                    // 폼 초기화 및 숨기기
+                    reviewForm.reset();
+                    writeReviewSection.style.display = 'none';
+                    
+                    // 후기 목록 새로고침
+                    console.log('🔄 후기 목록 새로고침...');
+                    await loadReviews(true);
+
+                } catch (error) {
+                    console.error('❌ 후기 등록 오류 상세 정보:');
+                    console.error('- Error Code:', error.code);
+                    console.error('- Error Message:', error.message);
+                    console.error('- Full Error:', error);
+                    
+                    let errorMessage = '후기 등록 중 오류가 발생했습니다.';
+                    
+                    switch (error.code) {
+                        case 'permission-denied':
+                            errorMessage = '권한이 없습니다. 로그인 상태를 확인해주세요.';
+                            break;
+                        case 'unauthenticated':
+                            errorMessage = '로그인이 필요합니다.';
+                            break;
+                        case 'failed-precondition':
+                            errorMessage = 'Firestore 규칙 검증에 실패했습니다.';
+                            break;
+                        case 'unavailable':
+                            errorMessage = '네트워크 연결을 확인해주세요.';
+                            break;
+                        default:
+                            errorMessage += ` (${error.code || '알 수 없는 오류'})`;
+                    }
+                    
+                    alert(errorMessage);
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = '후기 등록';
+                }
+            }
+
+            // 후기 목록 로드
+            async function loadReviews(reset = false) {
+                try {
+                    if (reset) {
+                        currentPage = 0;
+                        reviewsList.innerHTML = '<div class="loading-message">후기를 불러오는 중...</div>';
+                    }
+
+                    const reviewsQuery = query(
+                        collection(db, 'reviews'),
+                        orderBy('createdAt', 'desc'),
+                        limit(REVIEWS_PER_PAGE)
+                    );
+
+                    const querySnapshot = await getDocs(reviewsQuery);
+                    const reviews = [];
+
+                    querySnapshot.forEach((doc) => {
+                        reviews.push({
+                            id: doc.id,
+                            ...doc.data()
+                        });
+                    });
+
+                    if (reset) {
+                        reviewsList.innerHTML = '';
+                    }
+
+                    if (reviews.length === 0 && currentPage === 0) {
+                        reviewsList.innerHTML = `
+                            <div class="empty-message">
+                                <p>아직 등록된 후기가 없습니다.</p>
+                                <p>첫 번째 후기를 작성해보세요! 🌟</p>
+                            </div>
+                        `;
+                        reviewCount.textContent = '0';
+                        loadMoreContainer.style.display = 'none';
+                        return;
+                    }
+
+                    reviews.forEach(review => {
+                        const reviewElement = createReviewElement(review);
+                        reviewsList.appendChild(reviewElement);
+                    });
+
+                    // 후기 수 업데이트
+                    const totalQuery = query(collection(db, 'reviews'));
+                    const totalSnapshot = await getDocs(totalQuery);
+                    reviewCount.textContent = totalSnapshot.size;
+
+                    // 더보기 버튼 표시/숨김
+                    if (reviews.length === REVIEWS_PER_PAGE) {
+                        loadMoreContainer.style.display = 'block';
+                    } else {
+                        loadMoreContainer.style.display = 'none';
+                    }
+
+                } catch (error) {
+                    console.error('후기 로드 오류:', error);
+                    reviewsList.innerHTML = `
+                        <div class="empty-message">
+                            <p>후기를 불러오는 중 오류가 발생했습니다.</p>
+                            <button onclick="loadReviews(true)" class="link-btn">다시 시도</button>
+                        </div>
+                    `;
+                }
+            }
+
+            // 후기 아이템 생성
+            function createReviewElement(review) {
+                const reviewDiv = document.createElement('div');
+                reviewDiv.className = 'review-item';
+                reviewDiv.dataset.reviewId = review.id;
+
+                const createdAt = review.createdAt?.toDate ? 
+                    review.createdAt.toDate() : 
+                    new Date(review.createdAt);
+                
+                const formattedDate = createdAt.toLocaleDateString('ko-KR', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+
+                const stars = '⭐'.repeat(review.rating);
+                const authorInitial = review.authorName.charAt(0).toUpperCase();
+                const currentUser = auth.currentUser;
+                const isAuthor = currentUser && currentUser.uid === review.authorId;
+
+                reviewDiv.innerHTML = `
+                    <div class="review-header">
+                        <div class="review-author">
+                            <div class="author-avatar">${authorInitial}</div>
+                            <div class="author-info">
+                                <h4>${review.authorName}</h4>
+                                <div class="review-date">${formattedDate}</div>
+                            </div>
+                        </div>
+                        <div class="review-rating">${stars}</div>
+                    </div>
+                    <h3 class="review-title">${review.title}</h3>
+                    <div class="review-content">${review.content}</div>
+                    ${isAuthor ? `
+                        <div class="review-actions">
+                            <button class="action-btn edit" onclick="editReview('${review.id}')">수정</button>
+                            <button class="action-btn delete" onclick="deleteReview('${review.id}')">삭제</button>
+                        </div>
+                    ` : ''}
+                `;
+
+                return reviewDiv;
+            }
+
+            // 더보기 버튼
+            loadMoreBtn?.addEventListener('click', async () => {
+                currentPage++;
+                await loadReviews();
+            });
+
+            // 후기 수정 (전역 함수)
+            window.editReview = async function(reviewId) {
+                alert('수정 기능은 곧 업데이트 예정입니다.');
+            };
+
+            // 후기 삭제 (전역 함수)
+            window.deleteReview = async function(reviewId) {
+                console.log('🗑️ 후기 삭제 시작:', reviewId);
+                
+                const user = auth.currentUser;
+                console.log('👤 현재 사용자:', user ? `${user.email} (${user.uid})` : '로그인되지 않음');
+                
+                if (!user) {
+                    console.error('❌ 로그인 필요');
+                    alert('로그인이 필요합니다.');
+                    return;
+                }
+
+                if (!confirm('정말 이 후기를 삭제하시겠습니까?\n삭제된 후기는 복구할 수 없습니다.')) {
+                    console.log('👤 사용자가 삭제 취소');
+                    return;
+                }
+
+                try {
+                    console.log('🔄 Firebase 연결 상태 확인...');
+                    console.log('- Firestore:', db ? '✅ 연결됨' : '❌ 연결 안됨');
+                    console.log('- deleteDoc 함수:', deleteDoc ? '✅ 사용 가능' : '❌ 사용 불가');
+
+                    console.log('🗑️ Firestore에서 후기 삭제 중...');
+                    
+                    const reviewRef = doc(db, 'reviews', reviewId);
+                    await deleteDoc(reviewRef);
+                    
+                    console.log('✅ 후기 삭제 성공! 문서 ID:', reviewId);
+                    alert('후기가 성공적으로 삭제되었습니다.');
+                    
+                    await loadReviews(true);
+
+                } catch (error) {
+                    console.error('❌ 후기 삭제 오류 상세 정보:');
+                    console.error('- Error Code:', error.code);
+                    console.error('- Error Message:', error.message);
+                    console.error('- Full Error:', error);
+                    
+                    let errorMessage = '후기 삭제 중 오류가 발생했습니다.';
+                    
+                    switch (error.code) {
+                        case 'permission-denied':
+                            errorMessage = '권한이 없습니다. 본인이 작성한 후기만 삭제할 수 있습니다.';
+                            break;
+                        case 'not-found':
+                            errorMessage = '삭제하려는 후기를 찾을 수 없습니다.';
+                            break;
+                        case 'unauthenticated':
+                            errorMessage = '로그인이 필요합니다.';
+                            break;
+                        case 'unavailable':
+                            errorMessage = '네트워크 연결을 확인해주세요.';
+                            break;
+                        default:
+                            errorMessage += ` (${error.code || '알 수 없는 오류'})`;
+                    }
+                    
+                    alert(errorMessage);
+                }
+            };
+
+            // 페이지 로드시 후기 목록 로드
+            loadReviews(true);
+
+            // ⭐ 별점 시스템 함수들
+            function initializeStarRating() {
+                const starRating = document.getElementById('starRating');
+                const ratingText = document.getElementById('ratingText');
+                
+                if (!starRating || !ratingText) {
+                    console.log('⭐ 별점 요소를 찾을 수 없습니다');
+                    return;
+                }
+
+                const labels = starRating.querySelectorAll('label');
+                const inputs = starRating.querySelectorAll('input[type="radio"]');
+
+                console.log('⭐ 별점 요소 개수:', labels.length);
+
+                const ratingTexts = {
+                    1: '⭐ 매우 불만족',
+                    2: '⭐⭐ 불만족',  
+                    3: '⭐⭐⭐ 보통',
+                    4: '⭐⭐⭐⭐ 만족',
+                    5: '⭐⭐⭐⭐⭐ 매우 만족'
+                };
+
+                labels.forEach((label, index) => {
+                    const rating = parseInt(label.getAttribute('data-rating'));
+                    
+                    label.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        console.log(`⭐ ${rating}점 선택됨`);
+                        
+                        const targetInput = document.getElementById(`star${rating}`);
+                        if (targetInput) {
+                            targetInput.checked = true;
+                        }
+                        
+                        updateStarDisplay(rating);
+                        ratingText.textContent = ratingTexts[rating];
+                        ratingText.style.color = '#f59e0b';
+                        ratingText.style.fontWeight = '600';
+                    });
+
+                    label.addEventListener('mouseenter', function() {
+                        previewStarRating(rating);
+                    });
+                });
+
+                starRating.addEventListener('mouseleave', function() {
+                    const checkedInput = starRating.querySelector('input:checked');
+                    if (checkedInput) {
+                        updateStarDisplay(parseInt(checkedInput.value));
+                    } else {
+                        resetStarDisplay();
+                    }
+                });
+
+                console.log('⭐ 별점 시스템 초기화 완료');
+            }
+
+            function updateStarDisplay(rating) {
+                const labels = document.querySelectorAll('#starRating label');
+                
+                labels.forEach((label, index) => {
+                    const starValue = parseInt(label.getAttribute('data-rating'));
+                    
+                    if (starValue <= rating) {
+                        label.style.color = '#f59e0b';
+                        label.classList.add('active');
+                    } else {
+                        label.style.color = '#d1d5db';
+                        label.classList.remove('active');
+                    }
+                });
+            }
+
+            function previewStarRating(rating) {
+                const labels = document.querySelectorAll('#starRating label');
+                
+                labels.forEach((label, index) => {
+                    const starValue = parseInt(label.getAttribute('data-rating'));
+                    
+                    if (starValue <= rating) {
+                        label.style.color = '#fbbf24';
+                    } else {
+                        label.style.color = '#d1d5db';
+                    }
+                });
+            }
+
+            function resetStarDisplay() {
+                const labels = document.querySelectorAll('#starRating label');
+                labels.forEach(label => {
+                    label.style.color = '#d1d5db';
+                    label.classList.remove('active');
+                });
+                
+                document.getElementById('ratingText').textContent = '';
+            }
+        }
+
+        // 데이터베이스 연결 테스트 함수
+        async function testDatabaseConnection() {
+            console.log('🧪 데이터베이스 연결 테스트 시작...');
+            
+            try {
+                if (!window.firebaseInitialized) {
+                    throw new Error('Firebase가 초기화되지 않았습니다.');
+                }
+
+                // 1. Firestore 연결 테스트
+                console.log('🔗 Firestore 연결 테스트 중...');
+                const testDoc = {
+                    test: true,
+                    timestamp: window.serverTimestamp(),
+                    userAgent: navigator.userAgent,
+                    url: window.location.href
+                };
+
+                const docRef = await window.addDoc(window.collection(window.db, 'connection_tests'), testDoc);
+                console.log('✅ Firestore 쓰기 테스트 성공:', docRef.id);
+
+                // 2. Firestore 읽기 테스트
+                const querySnapshot = await window.getDocs(
+                    window.query(
+                        window.collection(window.db, 'connection_tests'), 
+                        window.orderBy('timestamp', 'desc'), 
+                        window.limit(1)
+                    )
+                );
+
+                if (!querySnapshot.empty) {
+                    console.log('✅ Firestore 읽기 테스트 성공');
+                    
+                    // 테스트 문서 삭제 (정리)
+                    await window.deleteDoc(window.doc(window.db, 'connection_tests', docRef.id));
+                    console.log('🧹 테스트 문서 정리 완료');
+                } else {
+                    console.warn('⚠️ Firestore 읽기 테스트에서 데이터를 찾을 수 없음');
+                }
+
+                // 3. 인증 연결 테스트
+                console.log('🔐 Firebase Auth 연결 테스트 중...');
+                const currentUser = window.auth.currentUser;
+                console.log('👤 현재 사용자:', currentUser ? `로그인됨 (${currentUser.email})` : '로그아웃됨');
+
+                console.log('🎉 모든 데이터베이스 연결 테스트 통과!');
+                return { success: true, message: '데이터베이스 연결이 정상적으로 작동합니다.' };
+
+            } catch (error) {
+                console.error('❌ 데이터베이스 연결 테스트 실패:', error);
+                return { 
+                    success: false, 
+                    error: error.message,
+                    message: '데이터베이스 연결에 문제가 있습니다.' 
+                };
+            }
+        }
+
+        // 개발자 도구용 전역 함수
+        window.testConnection = testDatabaseConnection;
+        window.debugFirebase = function() {
+            console.log('🐛 Firebase 디버그 정보:');
+            console.log('- Firebase 초기화됨:', window.firebaseInitialized);
+            console.log('- Firestore:', window.db ? '✅ 연결됨' : '❌ 연결 안됨');
+            console.log('- Auth:', window.auth ? '✅ 연결됨' : '❌ 연결 안됨');
+            console.log('- 현재 사용자:', window.auth?.currentUser?.email || '로그인되지 않음');
+            console.log('- EmailJS 설정됨:', window.emailjsConfigured);
+            console.log('- 저장된 실패한 상담신청:', localStorage.getItem('failedConsultations'));
+            
+            // 연결 테스트 실행
+            testDatabaseConnection();
+        };
+
+        // 상담신청과 데이터베이스연동에 문제가 있는 것 같으니 오류를 찾아서 수정해줘
+        // 사용자가 호출할 수 있는 문제 해결 함수
+        window.fixDatabaseIssues = async function() {
+            console.log('🔧 데이터베이스 문제 해결 시도 중...');
+            
+            try {
+                // 1. Firebase 재초기화 시도
+                if (!window.firebaseInitialized) {
+                    console.log('🔄 Firebase 재초기화 시도...');
+                    window.location.reload();
+                    return;
+                }
+
+                // 2. 연결 테스트
+                const testResult = await testDatabaseConnection();
+                if (testResult.success) {
+                    alert('✅ 데이터베이스 연결이 정상입니다!\n\n문제가 지속되면 브라우저를 새로고침 해보세요.');
+                    return;
+                }
+
+                // 3. 로컬에 저장된 실패한 신청 확인
+                const failedSubmissions = localStorage.getItem('failedConsultations');
+                if (failedSubmissions) {
+                    const failed = JSON.parse(failedSubmissions);
+                    if (failed.length > 0) {
+                        const message = `⚠️ 저장되지 않은 상담신청이 ${failed.length}개 있습니다.\n\n` +
+                                      '관리자에게 연락하여 수동으로 접수 처리해주세요.\n' +
+                                      '📞 031-275-3636';
+                        alert(message);
+                        console.log('실패한 신청들:', failed);
+                    }
+                }
+
+                // 4. 브라우저 호환성 확인
+                const compatibility = checkBrowserCompatibility();
+                if (!compatibility.compatible) {
+                    alert('❌ 브라우저 호환성 문제:\n\n' + compatibility.issues.join('\n') + 
+                          '\n\n최신 Chrome, Firefox, Safari, Edge 브라우저를 사용해주세요.');
+                    return;
+                }
+
+                alert('🔧 일반적인 해결 방법:\n\n' +
+                      '1. 페이지 새로고침 (F5 또는 Ctrl+R)\n' +
+                      '2. 브라우저 캐시 삭제\n' +
+                      '3. 다른 브라우저로 시도\n' +
+                      '4. 인터넷 연결 확인\n\n' +
+                      '📞 문제가 계속되면 전화주세요: 031-275-3636');
+
+            } catch (error) {
+                console.error('문제 해결 중 오류:', error);
+                alert('❌ 문제 해결 중 오류가 발생했습니다.\n\n📞 직접 전화주세요: 031-275-3636');
+            }
+        };
+
+        // 브라우저 호환성 확인
+        function checkBrowserCompatibility() {
+            const issues = [];
+            let compatible = true;
+
+            // ES6 지원 확인
+            try {
+                eval('const test = () => {};');
+            } catch (e) {
+                issues.push('ES6 문법을 지원하지 않는 구버전 브라우저입니다.');
+                compatible = false;
+            }
+
+            // Fetch API 확인
+            if (!window.fetch) {
+                issues.push('Fetch API를 지원하지 않습니다.');
+                compatible = false;
+            }
+
+            // IndexedDB 확인 (Firebase에서 사용)
+            if (!window.indexedDB) {
+                issues.push('IndexedDB를 지원하지 않습니다.');
+                compatible = false;
+            }
+
+            return { compatible, issues };
+        }
+
+        // 페이지 로드 완료 후 자동 테스트 실행
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('📱 페이지 로드 완료 - 자동 진단 시작...');
+            
+            // 3초 후 자동 테스트 (Firebase 초기화 대기)
+            setTimeout(async () => {
+                if (window.firebaseInitialized) {
+                    console.log('🎯 자동 데이터베이스 연결 테스트 실행...');
+                    const result = await testDatabaseConnection();
+                    
+                    if (result.success) {
+                        console.log('✅ 자동 진단 완료: 모든 시스템 정상');
+                    } else {
+                        console.error('⚠️ 자동 진단에서 문제 발견:', result.message);
+                        
+                        // 사용자에게 조용히 알림 (개발자 콘솔에서만)
+                        console.log('💡 문제 해결을 위해 개발자 도구에서 window.fixDatabaseIssues() 호출');
+                    }
+                } else {
+                    console.error('❌ Firebase 초기화 실패로 자동 테스트 건너뜀');
+                }
+            }, 3000);
+        });
     </script>
 
     <!-- 로그인/회원가입 모달 -->
