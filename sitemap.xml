@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- 메인 페이지 -->
+  <url>
+    <loc>https://joycom.or.kr/</loc>
+    <lastmod>2025-01-26T09:00:00+09:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  
+  <!-- 센터소개 섹션 -->
+  <url>
+    <loc>https://joycom.or.kr/#about</loc>
+    <lastmod>2025-01-26T09:00:00+09:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <!-- 상담프로그램 섹션 -->
+  <url>
+    <loc>https://joycom.or.kr/#services</loc>
+    <lastmod>2025-01-26T09:00:00+09:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <!-- 후기게시판 섹션 -->
+  <url>
+    <loc>https://joycom.or.kr/#reviews</loc>
+    <lastmod>2025-01-26T09:00:00+09:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- 상담신청 섹션 -->
+  <url>
+    <loc>https://joycom.or.kr/#consultation</loc>
+    <lastmod>2025-01-26T09:00:00+09:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <!-- 오시는길 섹션 -->
+  <url>
+    <loc>https://joycom.or.kr/#contact</loc>
+    <lastmod>2025-01-26T09:00:00+09:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- 관리자 페이지 -->
+  <url>
+    <loc>https://joycom.or.kr/admin.html</loc>
+    <lastmod>2025-01-26T09:00:00+09:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  
+  <!-- 관리자 설정 페이지 -->
+  <url>
+    <loc>https://joycom.or.kr/admin-setup.html</loc>
+    <lastmod>2025-01-26T09:00:00+09:00</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.2</priority>
+  </url>
+</urlset> 
