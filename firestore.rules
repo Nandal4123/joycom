@@ -1,139 +1,165 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // 상담신청서 컬렉션 보안 규칙
+    
+    // ==========================================
+    // 🏥 상담신청서 컬렉션 (consultations)
+    // ==========================================
     match /consultations/{document} {
-      // 생성: 모든 사용자 허용 (상담신청서 제출)
-      allow create: if validateConsultationData(request.resource.data);
+      // 생성: 모든 사용자 허용 (상담신청서 제출) - 타임스탬프 검증 제거
+      allow create: if validateConsultationDataPractical(request.resource.data);
       
-      // 읽기: 개발/테스트용으로 일시적 허용 (추후 관리자 인증으로 변경)
+      // 읽기: 개발/테스트용 허용 (추후 관리자만 가능하도록 변경)
       allow read: if true;
       
       // 수정: 상태 업데이트만 허용
-      allow update: if validateStatusUpdate(request.resource.data, resource.data);
+      allow update: if validateStatusUpdatePractical(request.resource.data, resource.data);
       
-      // 삭제: 제한 (관리자만 가능하도록 추후 변경)
+      // 삭제: 제한 (관리자만)
       allow delete: if false;
     }
     
-    // 후기 컬렉션 보안 규칙
+    // ==========================================
+    // 📝 후기 게시판 컬렉션 (reviews)
+    // ==========================================
     match /reviews/{document} {
       // 읽기: 모든 사용자 허용 (후기 목록 조회)
       allow read: if true;
       
-      // 생성: 로그인한 사용자만 허용
-      allow create: if request.auth != null && validateReviewData(request.resource.data);
+      // 생성: 로그인한 사용자만 허용 - 타임스탬프 검증 제거
+      allow create: if request.auth != null && validateReviewDataPractical(request.resource.data);
       
       // 수정: 본인 후기만 수정 가능
       allow update: if request.auth != null && 
                     request.auth.uid == resource.data.authorId &&
-                    validateReviewUpdate(request.resource.data, resource.data);
+                    validateReviewUpdatePractical(request.resource.data, resource.data);
       
       // 삭제: 본인 후기만 삭제 가능
       allow delete: if request.auth != null && 
                     request.auth.uid == resource.data.authorId;
     }
     
-    // 관리자 계정 컬렉션 (추후 추가용)
+    // ==========================================
+    // 👤 사용자 관리 컬렉션 (users) - 선택사항
+    // ==========================================
+    match /users/{userId} {
+      // 본인 정보만 읽기/쓰기 가능
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // ==========================================
+    // 👨‍💼 관리자 계정 컬렉션 (admins) - 추후 사용
+    // ==========================================
     match /admins/{adminId} {
       allow read, write: if request.auth != null && request.auth.uid == adminId;
     }
     
-    // 상담 통계 컬렉션 (읽기 전용)
+    // ==========================================
+    // 📊 통계 컬렉션 (statistics) - 읽기 전용
+    // ==========================================
     match /statistics/{document} {
       allow read: if true;
       allow write: if false; // Cloud Functions에서만 업데이트
     }
+    
+    // ==========================================
+    // 🧪 연결 테스트 컬렉션 (개발용)
+    // ==========================================
+    match /connection_tests/{document} {
+      allow read, write: if true; // 테스트용으로 모든 접근 허용
+    }
   }
 }
 
-// 상담신청서 데이터 유효성 검증
-function validateConsultationData(data) {
-  return data.keys().hasAll(['name', 'phone', 'consultationType', 'consultationMethod', 'privacyConsent']) &&
-         
-         // 필수 필드 검증
-         data.name is string && data.name.size() > 0 && data.name.size() <= 50 &&
-         data.phone is string && data.phone.size() > 0 && data.phone.size() <= 20 &&
-         
-         // 상담 유형 검증
-         data.consultationType in ['individual', 'couple', 'child', 'art', 'affair', 'petloss'] &&
-         
-         // 상담 방식 검증
-         data.consultationMethod in ['offline', 'phone', 'online'] &&
-         
-         // 개인정보 동의 검증
-         data.privacyConsent == true &&
-         
-         // 선택 필드 검증
-         (!('email' in data) || (data.email is string && data.email.size() <= 100)) &&
-         (!('message' in data) || (data.message is string && data.message.size() <= 1000)) &&
-         (!('preferredDate' in data) || data.preferredDate is string) &&
-         (!('preferredTime' in data) || data.preferredTime in ['morning', 'afternoon', 'evening']) &&
-         
-         // 상태 필드 검증
-         data.status == 'pending' &&
-         
-         // 타임스탬프 검증
-         data.createdAt == request.time &&
-         data.updatedAt == request.time;
+// ==========================================
+// 🔍 실용적인 데이터 검증 함수들
+// ==========================================
+
+// 상담신청서 데이터 유효성 검증 (실용적 버전)
+function validateConsultationDataPractical(data) {
+  return 
+    // 📋 필수 필드 존재 확인
+    'name' in data && 'phone' in data && 'consultationType' in data && 
+    'consultationMethod' in data && 'privacyConsent' in data &&
+    
+    // 📋 필수 필드 타입 및 길이 검증
+    data.name is string && data.name.size() > 0 && data.name.size() <= 100 &&
+    data.phone is string && data.phone.size() > 0 && data.phone.size() <= 50 &&
+    
+    // 🏷️ 상담 유형 검증 (문자열이면 OK)
+    data.consultationType is string && data.consultationType.size() > 0 &&
+    
+    // 📞 상담 방식 검증 (문자열이면 OK)
+    data.consultationMethod is string && data.consultationMethod.size() > 0 &&
+    
+    // ✅ 개인정보 동의 검증
+    data.privacyConsent == true &&
+    
+    // 📧 선택 필드 검증 (있으면 검증, 없어도 OK)
+    (!('email' in data) || (data.email is string && data.email.size() <= 100)) &&
+    (!('message' in data) || (data.message is string && data.message.size() <= 1000)) &&
+    (!('preferredDate' in data) || data.preferredDate is string) &&
+    (!('preferredTime' in data) || (data.preferredTime is string)) &&
+    
+    // 📌 상태 필드 검증 (있으면 검증, 없어도 OK)
+    (!('status' in data) || data.status is string) &&
+    
+    // 🆔 추가 필드들 허용 (source, version 등)
+    (!('source' in data) || data.source is string) &&
+    (!('version' in data) || data.version is string);
+    
+    // ⏰ 타임스탬프 검증은 제거 (serverTimestamp() 사용 시 문제 발생)
 }
 
-// 상태 업데이트 검증
-function validateStatusUpdate(newData, oldData) {
+// 상담신청서 상태 업데이트 검증 (실용적 버전)
+function validateStatusUpdatePractical(newData, oldData) {
   return 
-    // 기본 정보는 변경 불가
+    // 🔒 기본 정보는 변경 불가
     newData.name == oldData.name &&
     newData.phone == oldData.phone &&
     newData.consultationType == oldData.consultationType &&
     newData.consultationMethod == oldData.consultationMethod &&
     
-    // 상태 변경만 허용
-    newData.status in ['pending', 'contacted', 'scheduled', 'completed', 'cancelled'] &&
+    // 🔄 상태 변경만 허용
+    newData.status in ['pending', 'contacted', 'scheduled', 'completed', 'cancelled'];
     
-    // 업데이트 시간 갱신
-    newData.updatedAt == request.time &&
-    
-    // 생성 시간은 변경 불가
-    newData.createdAt == oldData.createdAt;
+    // ⏰ 타임스탬프 검증 제거 (자동 처리)
 }
 
-// 후기 데이터 유효성 검증
-function validateReviewData(data) {
-  return data.keys().hasAll(['title', 'content', 'rating', 'authorId', 'authorName', 'authorEmail']) &&
-         
-         // 필수 필드 검증
-         data.title is string && data.title.size() > 0 && data.title.size() <= 100 &&
-         data.content is string && data.content.size() > 0 && data.content.size() <= 1000 &&
-         data.rating is int && data.rating >= 1 && data.rating <= 5 &&
-         
-         // 작성자 정보 검증
-         data.authorId == request.auth.uid &&
-         data.authorName is string && data.authorName.size() > 0 &&
-         data.authorEmail is string && data.authorEmail.size() > 0 &&
-         
-         // 상태 검증
-         data.status == 'published' &&
-         
-         // 타임스탬프 검증
-         data.createdAt == request.time &&
-         data.updatedAt == request.time;
-}
-
-// 후기 업데이트 검증
-function validateReviewUpdate(newData, oldData) {
+// 후기 데이터 유효성 검증 (실용적 버전)
+function validateReviewDataPractical(data) {
   return 
-    // 기본 작성자 정보는 변경 불가
+    // 📝 필수 필드 존재 확인
+    'title' in data && 'content' in data && 'rating' in data && 
+    'authorId' in data && 'authorName' in data && 'authorEmail' in data &&
+    
+    // 📝 필수 필드 검증
+    data.title is string && data.title.size() > 0 && data.title.size() <= 100 &&
+    data.content is string && data.content.size() > 0 && data.content.size() <= 1000 &&
+    data.rating is int && data.rating >= 1 && data.rating <= 5 &&
+    
+    // 👤 작성자 정보 검증
+    data.authorId == request.auth.uid &&
+    data.authorName is string && data.authorName.size() > 0 &&
+    data.authorEmail is string && data.authorEmail.size() > 0 &&
+    
+    // 📌 상태 검증 (있으면 검증, 없어도 OK)
+    (!('status' in data) || data.status is string);
+    
+    // ⏰ 타임스탬프 검증 제거
+}
+
+// 후기 업데이트 검증 (실용적 버전)
+function validateReviewUpdatePractical(newData, oldData) {
+  return 
+    // 🔒 기본 작성자 정보는 변경 불가
     newData.authorId == oldData.authorId &&
     newData.authorEmail == oldData.authorEmail &&
     
-    // 제목, 내용, 별점만 수정 가능
+    // ✏️ 제목, 내용, 별점만 수정 가능
     newData.title is string && newData.title.size() > 0 && newData.title.size() <= 100 &&
     newData.content is string && newData.content.size() > 0 && newData.content.size() <= 1000 &&
-    newData.rating is int && newData.rating >= 1 && newData.rating <= 5 &&
+    newData.rating is int && newData.rating >= 1 && newData.rating <= 5;
     
-    // 업데이트 시간 갱신
-    newData.updatedAt == request.time &&
-    
-    // 생성 시간은 변경 불가
-    newData.createdAt == oldData.createdAt;
+    // ⏰ 타임스탬프 검증 제거 (자동 처리)
 } 

@@ -1,0 +1,131 @@
+# 조이상담코칭센터 Robots.txt
+# 네이버, 구글, 다음 등 모든 검색엔진에 적용
+
+# ==============================================
+# 모든 검색엔진 봇에 대한 기본 설정
+# ==============================================
+User-agent: *
+
+# 허용할 페이지들 (명시적 허용)
+Allow: /
+Allow: /index.html
+Allow: /sitemap.xml
+Allow: /images/
+Allow: /*.css
+Allow: /*.js
+Allow: /*.jpg
+Allow: /*.png
+Allow: /*.gif
+Allow: /*.ico
+
+# 차단할 페이지들 (보안 및 개인정보 보호)
+Disallow: /admin.html
+Disallow: /admin-setup.html
+Disallow: /functions/
+Disallow: /firebase-config.js
+Disallow: /consultation-service.js
+Disallow: /notification-service.js
+Disallow: /quick-sms-test.js
+Disallow: /*?*
+Disallow: /404.html
+
+# 크롤링 속도 제한 (1초 간격)
+Crawl-delay: 1
+
+# ==============================================
+# 네이버 검색봇 (Yeti) 전용 설정
+# ==============================================
+User-agent: Yeti
+User-agent: NaverBot
+
+# 네이버봇에게 허용할 특별한 페이지들
+Allow: /
+Allow: /index.html
+Allow: /sitemap.xml
+Allow: /images/
+Allow: /*.css
+Allow: /*.js
+
+# 네이버봇 차단 페이지들
+Disallow: /admin.html
+Disallow: /admin-setup.html
+Disallow: /functions/
+Disallow: /*?*
+
+# 네이버봇 크롤링 속도 (더 빠르게 허용)
+Crawl-delay: 0.5
+
+# ==============================================
+# 구글봇 전용 설정
+# ==============================================
+User-agent: Googlebot
+
+# 구글봇 허용
+Allow: /
+Allow: /index.html
+Allow: /sitemap.xml
+Allow: /images/
+
+# 구글봇 차단
+Disallow: /admin.html
+Disallow: /admin-setup.html
+Disallow: /functions/
+
+# ==============================================
+# 다음 검색봇 전용 설정
+# ==============================================
+User-agent: Daumoa
+
+# 다음봇 허용
+Allow: /
+Allow: /index.html
+Allow: /sitemap.xml
+Allow: /images/
+
+# 다음봇 차단
+Disallow: /admin.html
+Disallow: /admin-setup.html
+
+# ==============================================
+# 빙 검색봇 전용 설정
+# ==============================================
+User-agent: Bingbot
+
+# 빙봇 허용
+Allow: /
+Allow: /index.html
+Allow: /sitemap.xml
+
+# 빙봇 차단
+Disallow: /admin.html
+
+# ==============================================
+# 악의적인 봇들 차단
+# ==============================================
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+# ==============================================
+# 사이트맵 위치 명시
+# ==============================================
+Sitemap: https://joycom.or.kr/sitemap.xml
+
+# ==============================================
+# 네이버 웹마스터 도구용 추가 설정
+# ==============================================
+# 네이버 검색 최적화를 위한 권장사항:
+# 1. 사이트맵 정기 업데이트
+# 2. 페이지 로딩 속도 최적화
+# 3. 모바일 친화적 설계
+# 4. 구조화된 데이터 마크업
+
+# 마지막 업데이트: 2025-01-26 
