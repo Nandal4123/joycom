@@ -1,11 +1,22 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // 🚨 개발/테스트용 완전 개방 규칙
-    // 실제 배포 시에는 보안 규칙을 다시 적용해야 함
     
-    match /{document=**} {
-      allow read, write: if true;
+    // ==========================================
+    // 🏥 상담신청서 컬렉션 (consultations)
+    // ==========================================
+    match /consultations/{document} {
+      // 생성: 모든 사용자 허용 (상담신청서 제출)
+      allow create: if validateConsultationData(request.resource.data);
+      
+      // 읽기: 개발/테스트용 허용 (추후 관리자만 가능하도록 변경)
+      allow read: if true;
+      
+      // 수정: 상태 업데이트만 허용
+      allow update: if validateStatusUpdate(request.resource.data, resource.data);
+      
+      // 삭제: 제한 (관리자만)
+      allow delete: if false;
     }
   }
 }

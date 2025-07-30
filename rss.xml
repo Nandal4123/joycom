@@ -3,8 +3,8 @@
   <channel>
     <title>조이상담코칭센터</title>
     <description>용인 동백역 도보1분, 조이상담코칭센터. 개인·부부·아동상담, 심리치료 전문기관. 24시간 상담신청 접수, 전문 상담사 1:1 맞춤 상담 제공.</description>
-    <link>http://www.joycom.or.kr</link>
-    <atom:link href="http://www.joycom.or.kr/rss.xml" rel="self" type="application/rss+xml" />
+    <link>https://www.joycom.or.kr</link>
+    <atom:link href="https://www.joycom.or.kr/rss.xml" rel="self" type="application/rss+xml" />
     <language>ko</language>
     <lastBuildDate>Sun, 26 Jan 2025 00:00:00 GMT</lastBuildDate>
     <pubDate>Sun, 26 Jan 2025 00:00:00 GMT</pubDate>
@@ -20,8 +20,8 @@
     <item>
       <title>조이상담코칭센터 - 전문 심리상담 서비스</title>
       <description>용인 동백역 근처에서 개인상담, 부부상담, 아동상담 등 다양한 심리상담 서비스를 제공하는 전문기관입니다. 24시간 상담신청이 가능하며, 전문 상담사가 1:1 맞춤 상담을 제공합니다.</description>
-      <link>http://www.joycom.or.kr</link>
-      <guid>http://www.joycom.or.kr</guid>
+      <link>https://www.joycom.or.kr</link>
+      <guid>https://www.joycom.or.kr</guid>
       <pubDate>Sun, 26 Jan 2025 00:00:00 GMT</pubDate>
       <author>contact@joycom.or.kr (조이상담코칭센터)</author>
     </item>
@@ -29,8 +29,8 @@
     <item>
       <title>개인상담 - 자신만의 성장과 치유</title>
       <description>개인의 심리적 어려움을 해결하고 자아성장을 도모하는 1:1 개인상담 서비스입니다. 우울, 불안, 스트레스, 대인관계 등 다양한 문제에 대한 전문적인 상담을 제공합니다.</description>
-      <link>http://www.joycom.or.kr#services</link>
-      <guid>http://www.joycom.or.kr#individual</guid>
+      <link>https://www.joycom.or.kr#services</link>
+      <guid>https://www.joycom.or.kr#individual</guid>
       <pubDate>Sun, 26 Jan 2025 00:00:00 GMT</pubDate>
       <author>contact@joycom.or.kr (조이상담코칭센터)</author>
     </item>
@@ -38,8 +38,8 @@
     <item>
       <title>부부상담 - 소통과 이해의 회복</title>
       <description>부부간의 갈등 해결과 관계 개선을 위한 전문 부부상담 서비스입니다. 의사소통 문제, 성격 차이, 가치관 갈등 등을 해결하여 건강한 부부관계를 만들어갑니다.</description>
-      <link>http://www.joycom.or.kr#services</link>
-      <guid>http://www.joycom.or.kr#couple</guid>
+      <link>https://www.joycom.or.kr#services</link>
+      <guid>https://www.joycom.or.kr#couple</guid>
       <pubDate>Sun, 26 Jan 2025 00:00:00 GMT</pubDate>
       <author>contact@joycom.or.kr (조이상담코칭센터)</author>
     </item>
@@ -47,8 +47,8 @@
     <item>
       <title>아동·청소년 상담 - 건강한 성장 지원</title>
       <description>아동과 청소년의 정서적, 행동적 문제를 해결하고 건강한 성장을 지원하는 전문 상담 서비스입니다. 놀이치료, 미술치료 등 다양한 치료 기법을 활용합니다.</description>
-      <link>http://www.joycom.or.kr#services</link>
-      <guid>http://www.joycom.or.kr#child</guid>
+      <link>https://www.joycom.or.kr#services</link>
+      <guid>https://www.joycom.or.kr#child</guid>
       <pubDate>Sun, 26 Jan 2025 00:00:00 GMT</pubDate>
       <author>contact@joycom.or.kr (조이상담코칭센터)</author>
     </item>
